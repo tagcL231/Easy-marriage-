@@ -17,25 +17,25 @@ label.field-label { font-size: 12px; color: #888; margin-top: 8px; display: bloc
 button { width: 100%; padding: 10px; margin: 6px 0; border-radius: 8px; border: none; background: #b3325c; color: white; cursor: pointer; font-weight: 600; font-size: 14px; }
 button.secondary { background: white; color: #b3325c; border: 1px solid #b3325c; }
 button.sm { padding: 5px 10px; font-size: 12px; width: auto; margin: 2px; }
-button.green  { background: #27ae60; }
-button.red    { background: #e74c3c; }
-button.gray   { background: #95a5a6; }
+button.green { background: #27ae60; }
+button.red { background: #e74c3c; }
+button.gray { background: #95a5a6; }
 button.orange { background: #e67e22; }
 button:disabled { background: #ccc; cursor: not-allowed; }
 .card { background: white; border-radius: 12px; padding: 14px; margin: 10px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .tier-options { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
 .tier-options button { flex: 1; min-width: 90px; background: #f3d6dd; color: #92274a; }
 .tier-options button.selected { background: #b3325c; color: white; }
-.error   { color: #c0392b; font-size: 13px; margin: 4px 0; }
+.error { color: #c0392b; font-size: 13px; margin: 4px 0; }
 .success { color: #27ae60; font-size: 13px; margin: 4px 0; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; display: block; overflow-x: auto; }
 th, td { border-bottom: 1px solid #eee; padding: 6px; text-align: left; white-space: nowrap; vertical-align: middle; }
 nav button { width: auto; display: inline-block; padding: 6px 8px; background: white; color: #b3325c; font-size: 11px; }
 .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-.badge.basic   { background: #fde8ee; color: #b3325c; }
+.badge.basic { background: #fde8ee; color: #b3325c; }
 .badge.premium { background: #fff3cd; color: #856404; }
-.badge.deluxe  { background: #d4edda; color: #155724; }
-.badge.pending  { background: #fff3cd; color: #856404; }
+.badge.deluxe { background: #d4edda; color: #155724; }
+.badge.pending { background: #fff3cd; color: #856404; }
 .badge.approved { background: #d4edda; color: #155724; }
 .badge.rejected { background: #fde8ee; color: #c0392b; }
 .loading { text-align: center; padding: 40px; color: #888; }
@@ -51,14 +51,14 @@ nav button { width: auto; display: inline-block; padding: 6px 8px; background: w
 .info-row b { color: #b3325c; }
 .alert-box { border-radius: 10px; padding: 14px; margin: 10px 0; }
 .alert-warning { background: #fff3cd; border: 1px solid #ffc107; }
-.alert-info    { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+.alert-info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
 .alert-success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
 .section-divider { border: none; border-top: 1px solid #eee; margin: 16px 0; }
 .tab-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
 .tab-btn { flex: 1; padding: 8px; background: #f3d6dd; color: #92274a; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
 .tab-btn.active { background: #b3325c; color: white; }
 .msg-bubble { padding: 8px 12px; border-radius: 12px; margin: 4px 0; font-size: 13px; max-width: 85%; }
-.msg-user  { background: #f3d6dd; margin-left: auto; text-align: right; }
+.msg-user { background: #f3d6dd; margin-left: auto; text-align: right; }
 .msg-admin { background: #eee; margin-right: auto; }
 </style>
 </head>
@@ -83,53 +83,53 @@ nav button { width: auto; display: inline-block; padding: 6px 8px; background: w
 <script>
 // ── CONFIG ───────────────────────────────────────────────────
 const firebaseConfig = {
-  apiKey:            "AIzaSyCwVMVbP5ThB0STMxN4rx0RFHpzln3brlw",
-  authDomain:        "easy-marige.firebaseapp.com",
-  projectId:         "easy-marige",
-  storageBucket:     "easy-marige.firebasestorage.app",
+  apiKey: "AIzaSyCwVMVbP5ThB0STMxN4rx0RFHpzln3brlw",
+  authDomain: "easy-marige.firebaseapp.com",
+  projectId: "easy-marige",
+  storageBucket: "easy-marige.firebasestorage.app",
   messagingSenderId: "847086518742",
-  appId:             "1:847086518742:web:cc054b514107ab6a19a477",
-  measurementId:     "G-W1L31TT7ZM"
+  appId: "1:847086518742:web:cc054b514107ab6a19a477",
+  measurementId: "G-W1L31TT7ZM"
 };
 const ADMIN_EMAIL = "Umara4963@gmail.com";
 
 const TIERS = {
-  basic:   { label:'Basic Proposal',   icon:'💌', amount:1.99,  perks:'Text message' },
-  premium: { label:'Premium Proposal', icon:'💍', amount:5.99,  perks:'Message + photo card' },
-  deluxe:  { label:'Deluxe Proposal',  icon:'👑', amount:12.99, perks:'Video + certificate' }
+  basic: { label:'Basic Proposal', icon:'💌', amount:1.99, perks:'Text message' },
+  premium: { label:'Premium Proposal', icon:'💍', amount:5.99, perks:'Message + photo card' },
+  deluxe: { label:'Deluxe Proposal', icon:'👑', amount:12.99, perks:'Video + certificate' }
 };
 
 const LOCKABLE = [
-  { key:'photo',          label:'Profile Photo' },
-  { key:'age',            label:'Age' },
-  { key:'gender',         label:'Gender' },
-  { key:'religion',       label:'Religion' },
-  { key:'complexion',     label:'Complexion' },
-  { key:'nationality',    label:'Nationality' },
-  { key:'location',       label:'Current Residence' },
-  { key:'occupation',     label:'Occupation' },
+  { key:'photo', label:'Profile Photo' },
+  { key:'age', label:'Age' },
+  { key:'gender', label:'Gender' },
+  { key:'religion', label:'Religion' },
+  { key:'complexion', label:'Complexion' },
+  { key:'nationality', label:'Nationality' },
+  { key:'location', label:'Current Residence' },
+  { key:'occupation', label:'Occupation' },
   { key:'motherLanguage', label:'Mother Language' },
-  { key:'canSpeak',       label:'Can Speak' },
-  { key:'phone',          label:'Phone Number' },
-  { key:'email',          label:'Email Address' },
-  { key:'maritalStatus',  label:'Marital Status' },
-  { key:'bio',            label:'About Me' }
+  { key:'canSpeak', label:'Can Speak' },
+  { key:'phone', label:'Phone Number' },
+  { key:'email', label:'Email Address' },
+  { key:'maritalStatus', label:'Marital Status' },
+  { key:'bio', label:'About Me' }
 ];
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.firestore();
+const db = firebase.firestore();
 
 const appEl = document.getElementById('app');
 const navEl = document.getElementById('nav');
-let currentUser    = null;
+let currentUser = null;
 let currentProfile = null;
 
 function show(html) { appEl.innerHTML = html; }
 function showLoading() { show('<div class="loading">Loading…</div>'); }
 async function getProfile(uid) {
   const doc = await db.collection('users').doc(uid).get();
-  return doc.exists ? { id: doc.id, ...doc.data() } : null;
+  return doc.exists? { id: doc.id,...doc.data() } : null;
 }
 function compressPhoto(file, cb) {
   const reader = new FileReader();
@@ -139,7 +139,7 @@ function compressPhoto(file, cb) {
       const canvas = document.createElement('canvas');
       const MAX = 300; let w = img.width, h = img.height;
       if (w > h) { if (w > MAX) { h = Math.round(h*(MAX/w)); w = MAX; } }
-      else       { if (h > MAX) { w = Math.round(w*(MAX/h)); h = MAX; } }
+      else { if (h > MAX) { w = Math.round(w*(MAX/h)); h = MAX; } }
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
       cb(canvas.toDataURL('image/jpeg', 0.7));
@@ -150,8 +150,8 @@ function compressPhoto(file, cb) {
 }
 
 // ── FOOTER ───────────────────────────────────────────────────
-document.getElementById('footerAbout').onclick      = () => renderAbout();
-document.getElementById('footerSafety').onclick     = () => renderSafety();
+document.getElementById('footerAbout').onclick = () => renderAbout();
+document.getElementById('footerSafety').onclick = () => renderSafety();
 document.getElementById('footerDisclaimer').onclick = () => renderDisclaimer();
 document.getElementById('logoBtn').onclick = () => {
   if (!currentUser) { renderAuth(); return; }
@@ -164,24 +164,24 @@ document.getElementById('logoBtn').onclick = () => {
 function renderNav() {
   navEl.innerHTML = '';
   if (!currentUser) return;
-  const isAdmin    = currentProfile?.role === 'admin';
+  const isAdmin = currentProfile?.role === 'admin';
   const isApproved = currentProfile?.status === 'approved';
   navEl.innerHTML = `
     <span style="color:white;font-size:11px;">Hi, ${currentProfile?.name||''}</span>
-    ${!isAdmin && isApproved ? `
+    ${!isAdmin && isApproved? `
       <button id="navBrowse">Browse</button>
       <button id="navProposals">Proposals</button>
       <button id="navSupport">Support</button>
       <button id="navProfile">Profile</button>` : ''}
-    ${!isAdmin && !isApproved ? `<button id="navSupport">Support</button>` : ''}
+    ${!isAdmin &&!isApproved? `<button id="navSupport">Support</button>` : ''}
     <button id="navLogout">Logout</button>
   `;
   document.getElementById('navLogout').onclick = () => auth.signOut();
   const safe = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
-  safe('navBrowse',    renderBrowse);
+  safe('navBrowse', renderBrowse);
   safe('navProposals', renderMyProposals);
-  safe('navSupport',   renderSupportPortal);
-  safe('navProfile',   renderEditProfile);
+  safe('navSupport', renderSupportPortal);
+  safe('navProfile', renderEditProfile);
 }
 
 // ── AUTH ──────────────────────────────────────────────────────
@@ -190,7 +190,7 @@ function renderAuth() {
     <div class="card">
       <h2 style="color:#b3325c;">Login</h2>
       <input id="loginEmail" type="email" placeholder="Email">
-      <input id="loginPass"  type="password" placeholder="Password">
+      <input id="loginPass" type="password" placeholder="Password">
       <button id="loginBtn">Login</button>
       <button class="secondary" id="forgotBtn" style="margin-top:0;">Forgot Password?</button>
       <p class="success" id="resetMsg"></p>
@@ -247,7 +247,7 @@ function renderAuth() {
 
   window.updateMaritalStatus = () => {
     const gender = document.getElementById('suGender').value;
-    const sel    = document.getElementById('suMaritalStatus');
+    const sel = document.getElementById('suMaritalStatus');
     if (gender === 'Male') {
       sel.innerHTML = '<option value="">Select Status</option><option>Single</option><option>Already Married</option>';
     } else if (gender === 'Female') {
@@ -256,6 +256,9 @@ function renderAuth() {
       sel.innerHTML = '<option value="">Select Status</option><option>Single</option><option>Already Married</option><option>Divorced</option><option>Widow</option>';
     }
   };
+
+  // FIXED: This line was missing before
+  document.getElementById('loginBtn').onclick = async () => {
     const btn = document.getElementById('loginBtn');
     btn.disabled = true; btn.textContent = 'Logging in…';
     try {
@@ -267,9 +270,9 @@ function renderAuth() {
   };
 
   document.getElementById('suBtn').onclick = async () => {
-    const name   = document.getElementById('suName').value.trim();
-    const email  = document.getElementById('suEmail').value.trim();
-    const pass   = document.getElementById('suPass').value;
+    const name = document.getElementById('suName').value.trim();
+    const email = document.getElementById('suEmail').value.trim();
+    const pass = document.getElementById('suPass').value;
     const gender = document.getElementById('suGender').value;
     if (!name||!email||!pass) { document.getElementById('suErr').textContent = 'Name, email and password are required'; return; }
     if (!gender) { document.getElementById('suErr').textContent = 'Please select your gender'; return; }
@@ -278,8 +281,8 @@ function renderAuth() {
     try {
       const cred = await auth.createUserWithEmailAndPassword(email, pass);
       const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-      const role   = isAdmin ? 'admin' : 'user';
-      const status = isAdmin ? 'approved' : 'pending'; // admin auto-approved
+      const role = isAdmin? 'admin' : 'user';
+      const status = isAdmin? 'approved' : 'pending'; // admin auto-approved
       const visibility = {};
       LOCKABLE.forEach(f => visibility[f.key] = false);
       await db.collection('users').doc(cred.user.uid).set({
@@ -341,13 +344,12 @@ async function renderBrowse() {
   showLoading();
   const myGender = currentProfile?.gender || '';
   let filterGender = null;
-  if (myGender === 'Male')   filterGender = 'Female';
+  if (myGender === 'Male') filterGender = 'Female';
   if (myGender === 'Female') filterGender = 'Male';
 
-  // Fetch all users and filter client-side to avoid needing Firestore indexes
   const snap = await db.collection('users').where('role','==','user').get();
-  let others = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-    .filter(u => u.id !== currentUser.uid && u.status === 'approved');
+  let others = snap.docs.map(d => ({ id: d.id,...d.data() }))
+.filter(u => u.id!== currentUser.uid && u.status === 'approved');
   if (filterGender) others = others.filter(u => u.gender === filterGender);
 
   if (!others.length) {
@@ -357,7 +359,7 @@ async function renderBrowse() {
 
   const cards = others.map(u => {
     const vis = u.visibility || {};
-    const photoHtml = vis.photo && u.photo ? `<img src="${u.photo}" class="avatar">` : `<div class="avatar-placeholder">👤</div>`;
+    const photoHtml = vis.photo && u.photo? `<img src="${u.photo}" class="avatar">` : `<div class="avatar-placeholder">👤</div>`;
     const fields = [
       {key:'age',label:'Age'},{key:'religion',label:'Religion'},{key:'complexion',label:'Complexion'},
       {key:'nationality',label:'Nationality'},{key:'location',label:'Residence'},{key:'occupation',label:'Occupation'},
@@ -365,7 +367,7 @@ async function renderBrowse() {
       {key:'maritalStatus',label:'Marital Status'},
       {key:'phone',label:'Phone'},{key:'email',label:'Email'},{key:'bio',label:'About'}
     ];
-    const visRows   = fields.filter(f=>vis[f.key]&&u[f.key]).map(f=>`<p class="info-row"><b>${f.label}:</b> ${u[f.key]}</p>`).join('');
+    const visRows = fields.filter(f=>vis[f.key]&&u[f.key]).map(f=>`<p class="info-row"><b>${f.label}:</b> ${u[f.key]}</p>`).join('');
     const lockedCnt = LOCKABLE.filter(f=>f.key!=='photo'&&!vis[f.key]).length;
     return `<div class="card" style="text-align:center;">
       ${photoHtml}
@@ -415,8 +417,8 @@ function renderProposeForm(toId, toName) {
         toId, toName, tier: selectedTier,
         amount: TIERS[selectedTier].amount,
         message: document.getElementById('propMsg').value,
-        adminStatus: 'pending_admin',   // waiting for admin review
-        userConsent: 'pending',          // waiting for recipient consent
+        adminStatus: 'pending_admin',
+        userConsent: 'pending',
         paymentStatus: 'demo_unpaid',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -442,26 +444,24 @@ async function renderMyProposals() {
     db.collection('proposals').where('toId','==',currentUser.uid).get()
   ]);
 
-  // Filter received to only forwarded ones, sort client-side
   const allSent = sentSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  const allRec  = recSnap.docs.map(d=>({id:d.id,...d.data()}))
-    .filter(p => p.adminStatus === 'forwarded_to_user')
-    .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  const allRec = recSnap.docs.map(d=>({id:d.id,...d.data()}))
+.filter(p => p.adminStatus === 'forwarded_to_user')
+.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
 
   const statusLabel = p => {
-    if (p.adminStatus === 'pending_admin')      return '<span class="badge pending">⏳ Awaiting Admin Review</span>';
-    if (p.adminStatus === 'rejected_by_admin')  return '<span class="badge rejected">❌ Rejected by Admin</span>';
+    if (p.adminStatus === 'pending_admin') return '<span class="badge pending">⏳ Awaiting Admin Review</span>';
+    if (p.adminStatus === 'rejected_by_admin') return '<span class="badge rejected">❌ Rejected by Admin</span>';
     if (p.adminStatus === 'forwarded_to_user') {
-      if (p.userConsent === 'pending')  return '<span class="badge pending">⏳ Awaiting Recipient Response</span>';
-      if (p.userConsent === 'agreed')   return '<span class="badge approved">✅ Accepted by Recipient</span>';
+      if (p.userConsent === 'pending') return '<span class="badge pending">⏳ Awaiting Recipient Response</span>';
+      if (p.userConsent === 'agreed') return '<span class="badge approved">✅ Accepted by Recipient</span>';
       if (p.userConsent === 'declined') return '<span class="badge rejected">❌ Declined by Recipient</span>';
     }
     return '';
   };
 
-  // Received proposals needing consent
   const receivedCards = allRec.map(p => {
-    if (p.userConsent !== 'pending') {
+    if (p.userConsent!== 'pending') {
       return `<div class="card"><b>From:</b> ${p.fromName} · <span class="badge ${p.tier}">${TIERS[p.tier]?.icon} ${p.tier}</span><br>
         <p>${p.message||''}</p>
         <span class="badge ${p.userConsent==='agreed'?'approved':'rejected'}">${p.userConsent==='agreed'?'✅ You Accepted':'❌ You Declined'}</span>
@@ -480,14 +480,14 @@ async function renderMyProposals() {
 
   show(`
     <h2>Proposals Sent</h2>
-    ${allSent.length===0 ? '<p>None yet.</p>' : allSent.map(p=>`<div class="card">
+    ${allSent.length===0? '<p>None yet.</p>' : allSent.map(p=>`<div class="card">
       <b>To:</b> ${p.toName} · <span class="badge ${p.tier}">${TIERS[p.tier]?.icon} ${p.tier}</span> · $${p.amount?.toFixed(2)}<br>
       <p style="margin:6px 0;">${p.message||''}</p>
       ${statusLabel(p)}
     </div>`).join('')}
     <hr class="section-divider">
     <h2>Proposals Received</h2>
-    ${allRec.length===0 ? '<p>None yet.</p>' : receivedCards.join('')}
+    ${allRec.length===0? '<p>None yet.</p>' : receivedCards.join('')}
     <button class="secondary" id="backBtn" style="margin-top:8px;">Back to Browse</button>
   `);
 
@@ -507,31 +507,8 @@ async function renderMyProposals() {
   });
 }
 
-// ── SUPPORT PORTAL (User side) ────────────────────────────────
-async function renderSupportPortal() {
-  showLoading();
-  const uid = currentUser.uid;
-  const ticketsSnap = await db.collection('support').where('userId','==',uid).get();
-  const tickets = ticketsSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-
-  show(`
-    <h2>💬 Support Portal</h2>
-    <div class="card">
-      <h3 style="margin-top:0;">New Message to Admin</h3>
-      <label class="field-label">Subject</label>
-      <input id="supportSubject" placeholder="e.g. Account issue, Question…">
-      <label class="field-label">Message</label>
-      <textarea id="supportMessage" rows="4" placeholder="Describe your issue or question…"></textarea>
-      <button id="sendSupportBtn">Send Message</button>
-      <p class="success" id="supportMsg"></p>
-    </div>
-
-    <h3>Your Previous Messages</h3>
-    ${tickets.length === 0 ? '<p style="color:#888;font-size:13px;">No messages yet.</p>' :
-      tickets.map(t => `
-        <div class="card">
-          <b>${t.subject}</b>
-          <span class="badge ${t.status==='open'?'pending':'approved'}" style="float:right;">${t.status==='open'?'Open':'Replied'}</span>
+// ── SUPPORT PORTAL
+  .badge ${t.status==='open'?'pending':'approved'}" style="float:right;">${t.status==='open'?'Open':'Replied'}</span>
           <p style="font-size:13px;margin:6px 0;">${t.message}</p>
           ${t.adminReply ? `
             <div style="background:#f0f7f0;border-radius:8px;padding:10px;margin-top:6px;font-size:13px;">
@@ -631,19 +608,19 @@ async function renderAdmin(tab = 'accounts') {
     db.collection('proposals').get(),
     db.collection('support').get()
   ]);
-  const users       = usersSnap.docs.map(d=>({id:d.id,...d.data()}));
-  const proposals   = proposalsSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  const tickets     = supportSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  const regular     = users.filter(u=>u.role!=='admin');
-  const pending     = regular.filter(u=>u.status==='pending');
-  const revenue     = proposals.filter(p=>p.paymentStatus==='paid').reduce((s,p)=>s+(p.amount||0),0);
+  const users = usersSnap.docs.map(d=>({id:d.id,...d.data()}));
+  const proposals = proposalsSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  const tickets = supportSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  const regular = users.filter(u=>u.role!=='admin');
+  const pending = regular.filter(u=>u.status==='pending');
+  const revenue = proposals.filter(p=>p.paymentStatus==='paid').reduce((s,p)=>s+(p.amount||0),0);
   const pendingProp = proposals.filter(p=>p.adminStatus==='pending_admin');
   const openTickets = tickets.filter(t=>t.status==='open');
 
   const tabs = [
-    { key:'accounts',  label:`👥 Accounts ${pending.length>0?`(${pending.length}⚠️)`:''}` },
+    { key:'accounts', label:`👥 Accounts ${pending.length>0?`(${pending.length}⚠️)`:''}` },
     { key:'proposals', label:`💍 Proposals ${pendingProp.length>0?`(${pendingProp.length}⚠️)`:''}` },
-    { key:'support',   label:`💬 Support ${openTickets.length>0?`(${openTickets.length}⚠️)`:''}` }
+    { key:'support', label:`💬 Support ${openTickets.length>0?`(${openTickets.length}⚠️)`:''}` }
   ];
 
   show(`
@@ -745,7 +722,6 @@ async function renderAdmin(tab = 'accounts') {
     btn.onclick = async () => {
       if (!confirm(`Delete account for "${btn.dataset.name}"? This cannot be undone.`)) return;
       await db.collection('users').doc(btn.dataset.uid).delete();
-      // Also delete their proposals
       const pSnap = await db.collection('proposals').where('fromId','==',btn.dataset.uid).get();
       pSnap.forEach(d => d.ref.delete());
       renderAdmin(tab);
@@ -788,7 +764,7 @@ function adminUserCard(u, showApproval) {
   const approvalBtns = showApproval ? `
     <div style="margin:10px 0;">
       <button class="sm green approveBtn" data-uid="${u.id}" style="width:48%;">✅ Approve</button>
-      <button class="sm red rejectBtn"    data-uid="${u.id}" style="width:48%;">❌ Reject</button>
+      <button class="sm red rejectBtn" data-uid="${u.id}" style="width:48%;">❌ Reject</button>
       <button class="sm red deleteBtn" data-uid="${u.id}" data-name="${u.name}" style="width:100%;margin-top:4px;background:#7f0000;">🗑️ Delete Account</button>
     </div>` : `
     <div style="margin:8px 0;">
@@ -896,7 +872,7 @@ auth.onAuthStateChanged(async user => {
     currentProfile = await getProfile(user.uid);
     if (!currentProfile) { await auth.signOut(); return; }
     renderNav();
-    if (currentProfile.role === 'admin')       renderAdmin();
+    if (currentProfile.role === 'admin') renderAdmin();
     else if (currentProfile.status === 'approved') renderBrowse();
     else if (currentProfile.status === 'rejected') renderRejectedScreen();
     else renderPendingScreen();
