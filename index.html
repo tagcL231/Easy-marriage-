@@ -112,7 +112,6 @@ const LOCKABLE = [
   { key:'canSpeak',       label:'Can Speak' },
   { key:'phone',          label:'Phone Number' },
   { key:'email',          label:'Email Address' },
-  { key:'maritalStatus',  label:'Marital Status' },
   { key:'bio',            label:'About Me' }
 ];
 
@@ -192,8 +191,6 @@ function renderAuth() {
       <input id="loginEmail" type="email" placeholder="Email">
       <input id="loginPass"  type="password" placeholder="Password">
       <button id="loginBtn">Login</button>
-      <button class="secondary" id="forgotBtn" style="margin-top:0;">Forgot Password?</button>
-      <p class="success" id="resetMsg"></p>
       <p class="error" id="loginErr"></p>
     </div>
     <div class="card">
@@ -211,9 +208,7 @@ function renderAuth() {
       <label class="field-label">Phone Number</label><input id="suPhone" type="tel" placeholder="e.g. 03001234567">
       <label class="field-label">Age</label><input id="suAge" type="number" placeholder="Age" min="18" max="80">
       <label class="field-label">Gender *</label>
-      <select id="suGender" onchange="updateMaritalStatus()"><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select>
-      <label class="field-label">Marital Status</label>
-      <select id="suMaritalStatus"><option value="">Select Status</option><option>Single</option></select>
+      <select id="suGender"><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select>
       <label class="field-label">Religion</label>
       <select id="suReligion"><option value="">Select Religion</option><option>Sunni</option><option>Shia</option><option>Other</option></select>
       <label class="field-label">Complexion</label>
@@ -235,27 +230,7 @@ function renderAuth() {
     compressPhoto(f, b64 => { photoBase64 = b64; document.getElementById('photoPreviewWrap').innerHTML = `<img src="${b64}" class="avatar">`; });
   };
 
-  document.getElementById('forgotBtn').onclick = async () => {
-    const email = document.getElementById('loginEmail').value.trim();
-    if (!email) { document.getElementById('loginErr').textContent = 'Enter your email above first'; return; }
-    try {
-      await auth.sendPasswordResetEmail(email);
-      document.getElementById('resetMsg').textContent = '✅ Password reset email sent! Check your inbox.';
-      document.getElementById('loginErr').textContent = '';
-    } catch(e) { document.getElementById('loginErr').textContent = e.message; }
-  };
-
-  window.updateMaritalStatus = () => {
-    const gender = document.getElementById('suGender').value;
-    const sel    = document.getElementById('suMaritalStatus');
-    if (gender === 'Male') {
-      sel.innerHTML = '<option value="">Select Status</option><option>Single</option><option>Already Married</option>';
-    } else if (gender === 'Female') {
-      sel.innerHTML = '<option value="">Select Status</option><option>Single</option><option>Divorced</option><option>Widow</option>';
-    } else {
-      sel.innerHTML = '<option value="">Select Status</option><option>Single</option><option>Already Married</option><option>Divorced</option><option>Widow</option>';
-    }
-  };
+  document.getElementById('loginBtn').onclick = async () => {
     const btn = document.getElementById('loginBtn');
     btn.disabled = true; btn.textContent = 'Logging in…';
     try {
@@ -294,7 +269,6 @@ function renderAuth() {
         motherLanguage: document.getElementById('suMotherLang').value || '',
         canSpeak: document.getElementById('suCanSpeak').value || '',
         bio: document.getElementById('suBio').value || '',
-        maritalStatus: document.getElementById('suMaritalStatus').value || '',
         photo: photoBase64 || '',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -344,10 +318,9 @@ async function renderBrowse() {
   if (myGender === 'Male')   filterGender = 'Female';
   if (myGender === 'Female') filterGender = 'Male';
 
-  // Fetch all users and filter client-side to avoid needing Firestore indexes
-  const snap = await db.collection('users').where('role','==','user').get();
-  let others = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-    .filter(u => u.id !== currentUser.uid && u.status === 'approved');
+  let q = db.collection('users').where('role','==','user').where('status','==','approved');
+  const snap = await q.get();
+  let others = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(u => u.id !== currentUser.uid);
   if (filterGender) others = others.filter(u => u.gender === filterGender);
 
   if (!others.length) {
@@ -362,7 +335,6 @@ async function renderBrowse() {
       {key:'age',label:'Age'},{key:'religion',label:'Religion'},{key:'complexion',label:'Complexion'},
       {key:'nationality',label:'Nationality'},{key:'location',label:'Residence'},{key:'occupation',label:'Occupation'},
       {key:'motherLanguage',label:'Mother Language'},{key:'canSpeak',label:'Can Speak'},
-      {key:'maritalStatus',label:'Marital Status'},
       {key:'phone',label:'Phone'},{key:'email',label:'Email'},{key:'bio',label:'About'}
     ];
     const visRows   = fields.filter(f=>vis[f.key]&&u[f.key]).map(f=>`<p class="info-row"><b>${f.label}:</b> ${u[f.key]}</p>`).join('');
@@ -438,15 +410,9 @@ function renderProposeForm(toId, toName) {
 async function renderMyProposals() {
   showLoading();
   const [sentSnap, recSnap] = await Promise.all([
-    db.collection('proposals').where('fromId','==',currentUser.uid).get(),
-    db.collection('proposals').where('toId','==',currentUser.uid).get()
+    db.collection('proposals').where('fromId','==',currentUser.uid).orderBy('createdAt','desc').get(),
+    db.collection('proposals').where('toId','==',currentUser.uid).where('adminStatus','==','forwarded_to_user').orderBy('createdAt','desc').get()
   ]);
-
-  // Filter received to only forwarded ones, sort client-side
-  const allSent = sentSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  const allRec  = recSnap.docs.map(d=>({id:d.id,...d.data()}))
-    .filter(p => p.adminStatus === 'forwarded_to_user')
-    .sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
 
   const statusLabel = p => {
     if (p.adminStatus === 'pending_admin')      return '<span class="badge pending">⏳ Awaiting Admin Review</span>';
@@ -460,7 +426,8 @@ async function renderMyProposals() {
   };
 
   // Received proposals needing consent
-  const receivedCards = allRec.map(p => {
+  const receivedCards = recSnap.docs.map(d => {
+    const p = { id: d.id, ...d.data() };
     if (p.userConsent !== 'pending') {
       return `<div class="card"><b>From:</b> ${p.fromName} · <span class="badge ${p.tier}">${TIERS[p.tier]?.icon} ${p.tier}</span><br>
         <p>${p.message||''}</p>
@@ -480,14 +447,14 @@ async function renderMyProposals() {
 
   show(`
     <h2>Proposals Sent</h2>
-    ${allSent.length===0 ? '<p>None yet.</p>' : allSent.map(p=>`<div class="card">
+    ${sentSnap.empty ? '<p>None yet.</p>' : sentSnap.docs.map(d=>{const p=d.data();return `<div class="card">
       <b>To:</b> ${p.toName} · <span class="badge ${p.tier}">${TIERS[p.tier]?.icon} ${p.tier}</span> · $${p.amount?.toFixed(2)}<br>
       <p style="margin:6px 0;">${p.message||''}</p>
       ${statusLabel(p)}
-    </div>`).join('')}
+    </div>`;}).join('')}
     <hr class="section-divider">
     <h2>Proposals Received</h2>
-    ${allRec.length===0 ? '<p>None yet.</p>' : receivedCards.join('')}
+    ${recSnap.empty ? '<p>None yet.</p>' : receivedCards}
     <button class="secondary" id="backBtn" style="margin-top:8px;">Back to Browse</button>
   `);
 
@@ -511,8 +478,8 @@ async function renderMyProposals() {
 async function renderSupportPortal() {
   showLoading();
   const uid = currentUser.uid;
-  const ticketsSnap = await db.collection('support').where('userId','==',uid).get();
-  const tickets = ticketsSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  const ticketsSnap = await db.collection('support').where('userId','==',uid).orderBy('createdAt','desc').get();
+  const tickets = ticketsSnap.docs.map(d=>({id:d.id,...d.data()}));
 
   show(`
     <h2>💬 Support Portal</h2>
@@ -583,13 +550,6 @@ async function renderEditProfile() {
       <label class="field-label">Nationality</label><input id="epNationality" value="${u.nationality||''}" placeholder="Nationality">
       <label class="field-label">Current Residence</label><input id="epLocation" value="${u.location||''}" placeholder="City / Country">
       <label class="field-label">Occupation</label><input id="epOccupation" value="${u.occupation||''}" placeholder="Occupation">
-      <label class="field-label">Marital Status</label>
-      <select id="epMarital">
-        ${u.gender === 'Male'
-          ? `<option value="">Select</option><option ${u.maritalStatus==='Single'?'selected':''}>Single</option><option ${u.maritalStatus==='Already Married'?'selected':''}>Already Married</option>`
-          : `<option value="">Select</option><option ${u.maritalStatus==='Single'?'selected':''}>Single</option><option ${u.maritalStatus==='Divorced'?'selected':''}>Divorced</option><option ${u.maritalStatus==='Widow'?'selected':''}>Widow</option>`
-        }
-      </select>
       <label class="field-label">Mother Language</label><input id="epMotherLang" value="${u.motherLanguage||''}" placeholder="Mother Language">
       <label class="field-label">Can Speak</label><input id="epCanSpeak" value="${u.canSpeak||''}" placeholder="Languages">
       <label class="field-label">About Me</label><textarea id="epBio" rows="3">${u.bio||''}</textarea>
@@ -613,7 +573,6 @@ async function renderEditProfile() {
       occupation: document.getElementById('epOccupation').value,
       motherLanguage: document.getElementById('epMotherLang').value,
       canSpeak: document.getElementById('epCanSpeak').value,
-      maritalStatus: document.getElementById('epMarital').value,
       bio: document.getElementById('epBio').value,
       photo: photoBase64
     });
@@ -628,12 +587,12 @@ async function renderAdmin(tab = 'accounts') {
   showLoading();
   const [usersSnap, proposalsSnap, supportSnap] = await Promise.all([
     db.collection('users').get(),
-    db.collection('proposals').get(),
-    db.collection('support').get()
+    db.collection('proposals').orderBy('createdAt','desc').get(),
+    db.collection('support').orderBy('createdAt','desc').get()
   ]);
   const users       = usersSnap.docs.map(d=>({id:d.id,...d.data()}));
-  const proposals   = proposalsSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  const tickets     = supportSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  const proposals   = proposalsSnap.docs.map(d=>({id:d.id,...d.data()}));
+  const tickets     = supportSnap.docs.map(d=>({id:d.id,...d.data()}));
   const regular     = users.filter(u=>u.role!=='admin');
   const pending     = regular.filter(u=>u.status==='pending');
   const revenue     = proposals.filter(p=>p.paymentStatus==='paid').reduce((s,p)=>s+(p.amount||0),0);
@@ -741,16 +700,7 @@ async function renderAdmin(tab = 'accounts') {
     });
   }
 
-  document.querySelectorAll('.deleteBtn').forEach(btn => {
-    btn.onclick = async () => {
-      if (!confirm(`Delete account for "${btn.dataset.name}"? This cannot be undone.`)) return;
-      await db.collection('users').doc(btn.dataset.uid).delete();
-      // Also delete their proposals
-      const pSnap = await db.collection('proposals').where('fromId','==',btn.dataset.uid).get();
-      pSnap.forEach(d => d.ref.delete());
-      renderAdmin(tab);
-    };
-  });
+  // Attach approve/reject account buttons
   document.querySelectorAll('.approveBtn').forEach(btn => {
     btn.onclick = async () => {
       await db.collection('users').doc(btn.dataset.uid).update({ status: 'approved' });
@@ -789,11 +739,7 @@ function adminUserCard(u, showApproval) {
     <div style="margin:10px 0;">
       <button class="sm green approveBtn" data-uid="${u.id}" style="width:48%;">✅ Approve</button>
       <button class="sm red rejectBtn"    data-uid="${u.id}" style="width:48%;">❌ Reject</button>
-      <button class="sm red deleteBtn" data-uid="${u.id}" data-name="${u.name}" style="width:100%;margin-top:4px;background:#7f0000;">🗑️ Delete Account</button>
-    </div>` : `
-    <div style="margin:8px 0;">
-      <button class="sm red deleteBtn" data-uid="${u.id}" data-name="${u.name}" style="width:100%;background:#7f0000;">🗑️ Delete Account</button>
-    </div>`;
+    </div>` : '';
 
   const allFields = [
     {key:'photo',label:'Photo',val:u.photo?'(uploaded)':'—'},
@@ -801,7 +747,7 @@ function adminUserCard(u, showApproval) {
     {key:'religion',label:'Religion',val:u.religion},{key:'complexion',label:'Complexion',val:u.complexion},
     {key:'nationality',label:'Nationality',val:u.nationality},{key:'location',label:'Residence',val:u.location},
     {key:'occupation',label:'Occupation',val:u.occupation},{key:'motherLanguage',label:'Mother Lang',val:u.motherLanguage},
-    {key:'canSpeak',label:'Can Speak',val:u.canSpeak},{key:'maritalStatus',label:'Marital Status',val:u.maritalStatus},{key:'phone',label:'Phone',val:u.phone},
+    {key:'canSpeak',label:'Can Speak',val:u.canSpeak},{key:'phone',label:'Phone',val:u.phone},
     {key:'email',label:'Email',val:u.email},{key:'bio',label:'About',val:u.bio}
   ];
 
