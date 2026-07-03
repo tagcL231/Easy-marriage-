@@ -504,11 +504,35 @@ async function renderMyProposals() {
       await db.collection('proposals').doc(btn.dataset.id).update({ userConsent: 'declined' });
       renderMyProposals();
     };
+    });
   });
-}
+} // <-- This } closes renderMyProposals. You are missing this.
 
-// ── SUPPORT PORTAL
-  .badge ${t.status==='open'?'pending':'approved'}" style="float:right;">${t.status==='open'?'Open':'Replied'}</span>
+// SUPPORT PORTAL (User side)
+async function renderSupportPortal() {
+  showLoading();
+  const uid = currentUser.uid;
+  const ticketsSnap = await db.collection('support').where('userId','==',uid).get();
+  const tickets = ticketsSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+  show(`
+    <h2>💬 Support Portal</h2>
+    <div class="card">
+      <h3 style="margin-top:0;">New Message to Admin</h3>
+      <label class="field-label">Subject</label>
+      <input id="supportSubject" placeholder="e.g. Account issue, Question…">
+      <label class="field-label">Message</label>
+      <textarea id="supportMessage" rows="4" placeholder="Describe your issue or question…"></textarea>
+      <button id="sendSupportBtn">Send Message</button>
+      <p class="success" id="supportMsg"></p>
+    </div>
+
+    <h3>Your Previous Messages</h3>
+    ${tickets.length === 0? '<p style="color:#888;font-size:13px;">No messages yet.</p>' :
+      tickets.map(t => `
+        <div class="card">
+          <b>${t.subject}</b>
+          <span class="badge ${t.status==='open'?'pending':'approved'}" style="float:right;">${t.status==='open'?'Open':'Replied'}</span>
           <p style="font-size:13px;margin:6px 0;">${t.message}</p>
           ${t.adminReply ? `
             <div style="background:#f0f7f0;border-radius:8px;padding:10px;margin-top:6px;font-size:13px;">
