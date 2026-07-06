@@ -32,7 +32,6 @@
   a{color:inherit;}
   :focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 
-  /* ---- Header / brand ---- */
   .header{
     background:var(--ink);
     color:var(--paper);
@@ -107,7 +106,6 @@
   .text-center{text-align:center;}
   .text-muted{color:var(--slate);font-size:13px;}
 
-  /* ---- Profile grid ---- */
   .grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(210px, 1fr));gap:16px;}
   .profile-card{
     background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px;text-align:center;
@@ -134,7 +132,6 @@
   .badge-declined{background:#FBEAE8;color:#7A2A24;}
   .badge-admin{background:var(--ink);color:var(--gold);}
 
-  /* seal stamp micro-interaction */
   .stamp-btn{position:relative;}
   @keyframes stampDown{
     0%{transform:scale(1);}
@@ -144,7 +141,6 @@
   }
   .stamp-anim{animation:stampDown .38s ease;}
 
-  /* proposal list rows */
   .prop-row{
     display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);
   }
@@ -154,7 +150,6 @@
   .prop-name{font-weight:600;font-size:14.5px;}
   .prop-actions{display:flex;gap:8px;flex-shrink:0;}
 
-  /* chat */
   .chat-wrap{display:grid;grid-template-columns:220px 1fr;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;min-height:420px;background:#fff;}
   @media (max-width:640px){.chat-wrap{grid-template-columns:1fr;}}
   .chat-list{border-right:1px solid var(--line);background:var(--paper-dim);max-height:520px;overflow-y:auto;}
@@ -178,6 +173,18 @@
 
   .admin-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
   .admin-row:last-child{border-bottom:none;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(27,42,74,0.55);
+    display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;
+  }
+  .modal-box{background:#fff;border-radius:8px;padding:26px;max-width:380px;width:100%;text-align:center;}
+  .modal-box img.qr{width:200px;height:200px;margin:14px auto;border:1px solid var(--line);border-radius:6px;}
+  .modal-spinner{
+    width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--seal);
+    border-radius:50%;margin:16px auto;animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
@@ -197,6 +204,8 @@
   <div id="app"></div>
 </div>
 
+<div id="modalRoot"></div>
+
 <div class="footer">
   <p><a href="#" onclick="showPage('about');return false;">About</a> &nbsp;·&nbsp;
   <a href="#" onclick="showPage('safety');return false;">Safety</a> &nbsp;·&nbsp;
@@ -207,6 +216,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -221,21 +231,25 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+const functions = firebase.functions();
 
 const ADMIN_EMAIL = "Umara4963@gmail.com";
+
+// ---- Proposal forward fee config ----
+const PROPOSAL_FEE = { amount: 5, currency: "USDT" };
+
 let currentUser = null;
 let currentProfile = null;
 let unsubMatches = null;
 let unsubMessages = null;
 let activeMatchId = null;
-let usersCache = {}; // uid -> profile, for chat/proposals display
+let usersCache = {};
 
 const $ = id => document.getElementById(id);
 const show = (selector, html) => { const el = $(selector); if (el) el.innerHTML = html; };
 const esc = (str) => (str || '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const matchIdFor = (a, b) => [a, b].sort().join('_');
 
-// ---------- Photo compression ----------
 function compressPhoto(file, callback) {
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -255,7 +269,6 @@ function compressPhoto(file, callback) {
   reader.readAsDataURL(file);
 }
 
-// ---------- Navbar ----------
 function updateNavbar() {
   let html = '';
   if (currentUser) {
@@ -275,7 +288,6 @@ function updateNavbar() {
   show('navbar', html);
 }
 
-// ---------- Router ----------
 function showPage(page) {
   detachChatListener();
 
@@ -293,13 +305,17 @@ function showPage(page) {
             <label for="loginPass">Password</label>
             <div class="pass-field">
               <input type="password" id="loginPass" autocomplete="current-password" required>
-              <button type="button" class="eye-toggle" aria-label="Show password" onclick="togglePassword('loginPass')">👁</button>
+              <button type="button" class="eye-toggle" aria-label="Show password" onclick="togglePassword('loginPass')">eye</button>
             </div>
           </div>
           <div id="loginError" class="alert alert-error hidden"></div>
+          <div id="loginNotice" class="alert alert-success hidden"></div>
           <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Log in</button>
         </form>
-        <p class="text-muted" style="margin-top:16px;">New here? <a href="#" onclick="showPage('signup');return false;" style="color:var(--seal);font-weight:600;">Create an account</a></p>
+        <p class="text-muted" style="margin-top:14px;">
+          <a href="#" onclick="handleForgotPassword();return false;" style="color:var(--seal);font-weight:600;">Forgot password?</a>
+        </p>
+        <p class="text-muted" style="margin-top:10px;">New here? <a href="#" onclick="showPage('signup');return false;" style="color:var(--seal);font-weight:600;">Create an account</a></p>
       </div>
     `);
   }
@@ -328,7 +344,7 @@ function showPage(page) {
             <label for="signupPass">Password (min. 8 characters)</label>
             <div class="pass-field">
               <input type="password" id="signupPass" minlength="8" autocomplete="new-password" required>
-              <button type="button" class="eye-toggle" aria-label="Show password" onclick="togglePassword('signupPass')">👁</button>
+              <button type="button" class="eye-toggle" aria-label="Show password" onclick="togglePassword('signupPass')">eye</button>
             </div>
           </div>
           <div class="form-row">
@@ -499,7 +515,6 @@ function togglePassword(id) {
   input.type = input.type === 'password' ? 'text' : 'password';
 }
 
-// ---------- Auth ----------
 async function handleLogin(e) {
   e.preventDefault();
   const btn = $('loginBtn');
@@ -512,6 +527,34 @@ async function handleLogin(e) {
     $('loginError').classList.remove('hidden');
   } finally {
     btn.disabled = false; btn.textContent = 'Log in';
+  }
+}
+
+async function handleForgotPassword() {
+  const emailInput = $('loginEmail');
+  let email = emailInput ? emailInput.value.trim() : '';
+  if (!email) {
+    email = (prompt('Enter the email address on your account:') || '').trim();
+  }
+  if (!email) return;
+
+  const errBox = $('loginError');
+  const okBox = $('loginNotice');
+  errBox.classList.add('hidden');
+  okBox.classList.add('hidden');
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    okBox.textContent = "If that email has an account, we've sent a password reset link to it. Check your inbox (and spam folder).";
+    okBox.classList.remove('hidden');
+  } catch (error) {
+    if (error.code === 'auth/invalid-email') {
+      errBox.textContent = "That doesn't look like a valid email address.";
+      errBox.classList.remove('hidden');
+    } else {
+      okBox.textContent = "If that email has an account, we've sent a password reset link to it.";
+      okBox.classList.remove('hidden');
+    }
   }
 }
 
@@ -581,7 +624,6 @@ async function logout() {
   await auth.signOut();
 }
 
-// ---------- Browse & proposals ----------
 async function getSentProposalsMap() {
   const snap = await db.collection('proposals').where('fromUid', '==', currentUser.uid).get();
   const map = {};
@@ -603,10 +645,12 @@ async function loadProfiles() {
       return;
     }
 
-    let html = '<h2 style="margin-bottom:14px;">Browse Profiles</h2><div class="grid">';
+    let html = `<h2 style="margin-bottom:4px;">Browse Profiles</h2>
+      <p class="text-muted" style="margin-bottom:14px;">Sending a proposal has a forward fee of ${PROPOSAL_FEE.amount} ${PROPOSAL_FEE.currency}, payable via Bybit.</p>
+      <div class="grid">`;
     profiles.forEach(p => {
       const existing = sentMap[p.id];
-      let actionHtml = `<button class="btn btn-primary btn-sm btn-block stamp-btn" onclick="sendProposal('${p.id}', this)">Send Proposal</button>`;
+      let actionHtml = `<button class="btn btn-primary btn-sm btn-block stamp-btn" onclick="startSendProposal('${p.id}', this)">Send Proposal</button>`;
       if (existing) {
         if (existing.status === 'pending') actionHtml = `<span class="badge badge-pending" style="display:block;">Proposal Sent</span>`;
         else if (existing.status === 'accepted') actionHtml = `<span class="badge badge-accepted" style="display:block;">Matched — go to Chat</span>`;
@@ -629,9 +673,69 @@ async function loadProfiles() {
   }
 }
 
-async function sendProposal(toUid, btnEl) {
-  btnEl.disabled = true;
-  btnEl.classList.add('stamp-anim');
+async function startSendProposal(toUid, btnEl) {
+  const existing = await db.collection('proposals')
+    .where('fromUid', '==', currentUser.uid).where('toUid', '==', toUid).limit(1).get();
+  if (!existing.empty) { showPage('browse'); return; }
+
+  openPaymentModal(toUid, btnEl);
+}
+
+function openPaymentModal(toUid, btnEl) {
+  const modalRoot = $('modalRoot');
+  modalRoot.innerHTML = `
+    <div class="modal-overlay" id="payModalOverlay">
+      <div class="modal-box">
+        <h3 style="margin-bottom:6px;">Proposal forward fee</h3>
+        <p class="text-muted">Pay ${PROPOSAL_FEE.amount} ${PROPOSAL_FEE.currency} via Bybit to send this proposal.</p>
+        <div id="payModalBody">
+          <div class="modal-spinner"></div>
+          <p class="text-muted">Creating your payment order…</p>
+        </div>
+        <button class="btn btn-secondary btn-block" style="margin-top:16px;" onclick="closePaymentModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  createBybitOrderAndWatch(toUid, btnEl);
+}
+
+function closePaymentModal() {
+  if (window._payUnsub) { window._payUnsub(); window._payUnsub = null; }
+  $('modalRoot').innerHTML = '';
+}
+
+async function createBybitOrderAndWatch(toUid, btnEl) {
+  try {
+    const createOrder = functions.httpsCallable('createBybitProposalOrder');
+    const result = await createOrder({
+      toUid,
+      amount: PROPOSAL_FEE.amount,
+      currency: PROPOSAL_FEE.currency
+    });
+    const { orderId, qrCodeUrl } = result.data;
+
+    show('payModalBody', `
+      <img src="${qrCodeUrl}" class="qr" alt="Bybit payment QR code">
+      <p class="text-muted">Scan this with the Bybit app to pay.</p>
+      <p class="text-muted" style="margin-top:10px;"><em>Waiting for confirmation…</em></p>
+    `);
+
+    window._payUnsub = db.collection('payments').doc(orderId).onSnapshot(async (doc) => {
+      const data = doc.data();
+      if (data && data.status === 'paid') {
+        closePaymentModal();
+        await finalizeSendProposal(toUid, orderId, btnEl);
+      } else if (data && data.status === 'failed') {
+        show('payModalBody', `<div class="alert alert-error">Payment failed or was cancelled. You can try again.</div>`);
+      }
+    });
+  } catch (error) {
+    show('payModalBody', `<div class="alert alert-error">Couldn't start payment: ${esc(error.message)}</div>`);
+  }
+}
+
+async function finalizeSendProposal(toUid, paymentOrderId, btnEl) {
+  if (btnEl) { btnEl.disabled = true; btnEl.classList.add('stamp-anim'); }
   try {
     const existing = await db.collection('proposals')
       .where('fromUid', '==', currentUser.uid).where('toUid', '==', toUid).limit(1).get();
@@ -641,12 +745,15 @@ async function sendProposal(toUid, btnEl) {
       fromUid: currentUser.uid,
       toUid,
       status: 'pending',
+      feePaid: true,
+      feeOrderId: paymentOrderId,
+      feeAmount: PROPOSAL_FEE.amount,
+      feeCurrency: PROPOSAL_FEE.currency,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     setTimeout(() => showPage('browse'), 350);
   } catch (error) {
-    alert('Could not send proposal: ' + error.message);
-    btnEl.disabled = false;
+    alert('Payment succeeded, but the proposal could not be created: ' + error.message + '. Please contact support with order ID ' + paymentOrderId + '.');
   }
 }
 
@@ -731,7 +838,6 @@ async function cancelProposal(proposalId) {
   }
 }
 
-// ---------- Profile page ----------
 function loadProfilePage() {
   const p = currentProfile;
   show('profileContent', `
@@ -794,7 +900,6 @@ async function handleProfileUpdate(e) {
   }
 }
 
-// ---------- Chat ----------
 function detachChatListener() {
   if (unsubMatches) { unsubMatches(); unsubMatches = null; }
   if (unsubMessages) { unsubMessages(); unsubMessages = null; }
@@ -870,7 +975,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// ---------- Admin ----------
 async function switchAdminTab(which) {
   $('admtab-pending').classList.toggle('active', which === 'pending');
   $('admtab-all').classList.toggle('active', which === 'all');
@@ -923,7 +1027,6 @@ async function setUserStatus(uid, status) {
   }
 }
 
-// ---------- Auth state ----------
 auth.onAuthStateChanged(async (user) => {
   currentUser = user;
   if (user) {
