@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Easy-marriage — a vibrant, modern matchmaking platform for people looking for a life partner.">
+<title>Easy-marriage — Find Your Life Partner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF8F3; --surface:#FFFFFF; --surface-2:#FFF1E8;
+    --text:#2B2140; --muted:#786F91; --line:#F0E2D8;
+    --primary:#FF5D8F; --primary-dark:#E1447A; --secondary:#00C2A8; --accent:#FFC93C;
+    --danger:#E5484D; --danger-bg:#FFE9E9; --success:#1F9D6E; --success-bg:#E4F8EE;
+    --shadow: 0 4px 18px rgba(43,33,64,0.08); --shadow-lg: 0 12px 34px rgba(43,33,64,0.14);
+  }
+  :root[data-theme="dark"]{
+    --bg:#150F22; --surface:#1F1832; --surface-2:#271F3D;
+    --text:#F4EFFB; --muted:#A99FC4; --line:#332A4C;
+    --primary:#FF6FA3; --primary-dark:#FF5D8F; --secondary:#2BE8CB; --accent:#FFD65C;
+    --danger:#FF7A7E; --danger-bg:#3A2027; --success:#4BDB9C; --success-bg:#153429;
+    --shadow: 0 4px 18px rgba(0,0,0,0.35); --shadow-lg: 0 14px 40px rgba(0,0,0,0.5);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;transition:background .35s ease, color .35s ease;min-height:100vh;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;font-weight:700;}
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--secondary);outline-offset:2px;}
+  ::selection{background:var(--primary);color:#fff;}
+
+  .header{background:linear-gradient(120deg, var(--primary), var(--primary-dark));color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% -20%, rgba(255,255,255,0.25), transparent 55%);pointer-events:none;}
+  .brand{display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+  .logo-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg, var(--accent), var(--secondary));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(0,0,0,0.2);animation:pulseHeart 2.6s ease-in-out infinite;}
+  @keyframes pulseHeart{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+  .brand-text h1{font-size:22px;line-height:1.1;}
+  .brand-text p{font-size:11px;opacity:0.9;letter-spacing:0.08em;text-transform:uppercase;margin-top:2px;}
+  .nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative;z-index:1;}
+  .nav button, .nav .hi{background:rgba(255,255,255,0.16);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:8px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600;transition:background .2s, transform .15s;}
+  .nav button:hover{background:rgba(255,255,255,0.3);transform:translateY(-1px);}
+  .nav .hi{border:none;background:none;padding:8px 4px;font-weight:600;}
+  .theme-toggle{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.16);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s, background .2s;position:relative;z-index:1;}
+  .theme-toggle:hover{background:rgba(255,255,255,0.3);transform:rotate(20deg);}
+
+  .container{max-width:960px;margin:0 auto;padding:28px 20px 60px;}
+  #app{animation:fadeSlideIn .38s ease;}
+  @keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px;margin-bottom:20px;box-shadow:var(--shadow);transition:background .35s ease, border-color .35s ease;}
+  .card h2{font-size:22px;margin-bottom:6px;}
+
+  .form-group{margin-bottom:16px;}
+  .form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px;}
+  .form-group input, .form-group select, .form-group textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;background:var(--surface-2);color:var(--text);transition:border-color .2s, box-shadow .2s;}
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(255,93,143,0.15);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:560px){.form-row{grid-template-columns:1fr;}}
+
+  .btn{position:relative;overflow:hidden;padding:12px 24px;border:none;border-radius:24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .12s ease, box-shadow .2s ease, opacity .2s;}
+  .btn:active{transform:scale(0.96);}
+  .btn-primary{background:linear-gradient(120deg, var(--primary), var(--primary-dark));color:#fff;box-shadow:0 6px 16px rgba(255,93,143,0.35);}
+  .btn-primary:hover{box-shadow:0 8px 22px rgba(255,93,143,0.48);}
+  .btn-primary:disabled{background:#c9c1d6;box-shadow:none;cursor:not-allowed;}
+  .btn-secondary{background:transparent;color:var(--primary);border:2px solid var(--primary);}
+  .btn-secondary:hover{background:rgba(255,93,143,0.08);}
+  .btn-teal{background:linear-gradient(120deg, var(--secondary), #00A891);color:#fff;box-shadow:0 6px 16px rgba(0,194,168,0.32);}
+  .btn-teal:hover{box-shadow:0 8px 22px rgba(0,194,168,0.45);}
+  .btn-danger{background:transparent;color:var(--danger);border:2px solid var(--danger);}
+  .btn-danger:hover{background:rgba(229,72,77,0.08);}
+  .btn-sm{padding:8px 16px;font-size:12.5px;}
+  .btn-block{width:100%;}
+  .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.55);transform:scale(0);animation:rippleAnim .5s ease-out;pointer-events:none;}
+  @keyframes rippleAnim{to{transform:scale(2.6);opacity:0;}}
+
+  .alert{padding:12px 16px;border-radius:10px;margin-bottom:15px;font-size:13.5px;border-left:4px solid;}
+  .alert-error{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
+  .alert-success{background:var(--success-bg);color:var(--success);border-color:var(--success);}
+  .alert-info{background:var(--surface-2);color:var(--text);border-color:var(--secondary);}
+
+  .hidden{display:none !important;}
+  .text-center{text-align:center;}
+  .text-muted{color:var(--muted);font-size:13px;}
+
+  .spinner{width:34px;height:34px;border-radius:50%;margin:0 auto;border:4px solid var(--line);border-top-color:var(--primary);animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-wrap{text-align:center;padding:50px 20px;color:var(--muted);}
+  .skeleton-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;height:220px;position:relative;overflow:hidden;}
+  .skeleton-card::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg, transparent, rgba(255,255,255,0.35), transparent);transform:translateX(-100%);animation:shimmer 1.3s infinite;}
+  :root[data-theme="dark"] .skeleton-card::after{background:linear-gradient(100deg, transparent, rgba(255,255,255,0.06), transparent);}
+  @keyframes shimmer{100%{transform:translateX(100%);}}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(210px, 1fr));gap:16px;}
+  .profile-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center;transition:transform .2s ease, box-shadow .2s ease;}
+  .profile-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+  .profile-avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto 12px;border:3px solid var(--accent);}
+  .profile-avatar-placeholder{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;background:var(--surface-2);border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;font-size:32px;color:var(--muted);}
+  .profile-name{font-family:'Baloo 2',sans-serif;font-size:18px;margin-bottom:4px;}
+  .profile-info{font-size:13px;color:var(--muted);margin:2px 0;}
+  .lock-note{font-size:11px;color:var(--muted);font-style:italic;}
+  .card-actions{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+
+  .tabs{display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:20px;overflow-x:auto;}
+  .tab-btn{background:none;border:none;padding:10px 18px;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;font-family:inherit;white-space:nowrap;transition:color .2s;}
+  .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
+
+  .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:700;margin:3px 2px;letter-spacing:0.01em;}
+  .badge-pending{background:#FFF3D6;color:#8A6D2E;}
+  .badge-accepted{background:var(--success-bg);color:var(--success);}
+  .badge-declined{background:var(--danger-bg);color:var(--danger);}
+  .badge-premium{background:linear-gradient(120deg, var(--accent), var(--primary));color:#fff;}
+  :root[data-theme="dark"] .badge-pending{background:#3A331A;color:#FFD65C;}
+
+  .prop-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .prop-row:last-child{border-bottom:none;}
+  .prop-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--accent);background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',sans-serif;color:var(--muted);}
+  .prop-meta{flex:1;min-width:160px;}
+  .prop-name{font-weight:700;font-size:14.5px;}
+  .prop-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;}
+
+  .chat-wrap{display:grid;grid-template-columns:220px 1fr;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:420px;background:var(--surface);}
+  @media (max-width:640px){.chat-wrap{grid-template-columns:1fr;}}
+  .chat-list{border-right:1px solid var(--line);background:var(--surface-2);max-height:520px;overflow-y:auto;}
+  .chat-list-item{padding:13px 16px;cursor:pointer;border-bottom:1px solid var(--line);font-size:13.5px;font-weight:600;transition:background .15s;}
+  .chat-list-item:hover{background:var(--surface);}
+  .chat-list-item.active{background:var(--surface);border-left:3px solid var(--primary);}
+  .chat-pane{display:flex;flex-direction:column;height:520px;}
+  .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;}
+  .msg{max-width:75%;padding:9px 14px;border-radius:16px;font-size:13.5px;animation:msgPop .2s ease;}
+  @keyframes msgPop{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+  .msg-mine{align-self:flex-end;background:linear-gradient(120deg, var(--primary), var(--primary-dark));color:#fff;border-bottom-right-radius:4px;}
+  .msg-theirs{align-self:flex-start;background:var(--surface-2);color:var(--text);border-bottom-left-radius:4px;}
+  .chat-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);}
+  .chat-input-row input{flex:1;}
+
+  .eye-toggle{position:absolute;right:8px;top:8px;background:none;border:none;cursor:pointer;font-size:15px;padding:6px;}
+  .pass-field{position:relative;}
+
+  .footer{background:var(--surface);color:var(--muted);text-align:center;padding:26px 20px;font-size:12px;border-top:1px solid var(--line);}
+  .footer a{color:var(--primary);text-decoration:none;font-weight:600;}
+  .footer a:hover{text-decoration:underline;}
+
+  .admin-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .admin-row:last-child{border-bottom:none;}
+
+  .plan-card{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:22px;text-align:center;transition:transform .2s, border-color .2s;}
+  .plan-card.featured{border-color:var(--primary);position:relative;}
+  .plan-card.featured::before{content:'MOST POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 12px;border-radius:12px;}
+  .plan-price{font-family:'Baloo 2',sans-serif;font-size:32px;color:var(--primary);margin:10px 0;}
+  .pm-option{border:2px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .2s, background .2s;}
+  .pm-option.selected{border-color:var(--primary);background:rgba(255,93,143,0.06);}
+  .pm-option label{cursor:pointer;font-weight:700;}
+
+  #toastHost{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;}
+  .toast{background:var(--surface);color:var(--text);border:1px solid var(--line);border-left:4px solid var(--primary);padding:12px 18px;border-radius:10px;box-shadow:var(--shadow-lg);font-size:13.5px;min-width:220px;max-width:320px;animation:toastIn .3s ease;}
+  .toast.success{border-left-color:var(--success);}
+  .toast.error{border-left-color:var(--danger);}
+  @keyframes toastIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+  .toast.out{animation:toastOut .3s ease forwards;}
+  @keyframes toastOut{to{opacity:0;transform:translateX(30px);}}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(21,15,34,0.55);display:flex;align-items:center;justify-content:center;z-index:9998;padding:16px;animation:fadeSlideIn .25s ease;}
+  .modal-box{background:var(--surface);border-radius:18px;padding:26px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+  .modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+  .section-check{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .section-check:last-child{border-bottom:none;}
+  .total-row{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:17px;margin:14px 0;padding-top:12px;border-top:2px solid var(--line);}
+
+  .bar-row{margin-bottom:10px;}
+  .bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;}
+  .bar-track{background:var(--surface-2);border-radius:6px;height:10px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:6px;}
+  .stat-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:22px;}
+  .stat-box{background:var(--surface-2);border-radius:12px;padding:14px;text-align:center;}
+  .stat-box .num{font-family:'Baloo 2',sans-serif;font-size:24px;color:var(--primary);}
+  .stat-box .lbl{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="logo-mark">💞</div>
+    <div class="brand-text"><h1>Easy-marriage</h1><p>Find your life partner</p></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="nav" id="navbar"></div>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
+  </div>
+</div>
+
+<div class="container"><div id="app"></div></div>
+
+<div class="footer">
+  <p><a href="#" onclick="showPage('about');return false;">About</a> &nbsp;·&nbsp;
+  <a href="#" onclick="showPage('safety');return false;">Safety</a> &nbsp;·&nbsp;
+  <a href="#" onclick="showPage('terms');return false;">Terms</a> &nbsp;·&nbsp;
+  <a href="#" onclick="showPage('upgrade');return false;">Premium</a></p>
+  <p style="margin-top:10px;opacity:0.7;">&copy; 2026 Easy-marriage. All rights reserved.</p>
+</div>
+
+<div id="toastHost"></div>
+<div id="modalHost"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+/* ================================================================
+   CONFIG
+   ================================================================ */
+const CONFIG = {
+  firebase: {
+    apiKey: "AIzaSyCwVMVbP5ThB0STMxN4rx0RFHpzln3brlw",
+    authDomain: "easy-marige.firebaseapp.com",
+    projectId: "easy-marige",
+    storageBucket: "easy-marige.firebasestorage.app",
+    messagingSenderId: "847086518742",
+    appId: "1:847086518742:web:cc054b514107ab6a19a477"
+  },
+  ADMIN_EMAIL: "Umara4963@gmail.com",
+  SUPPORT_EMAIL: "Userssupportsupportcenter@gmail.com",
+  BASE_CURRENCY: "USD",
+  PREMIUM_PRICE_USD: 9.99,
+  PREMIUM_PERIOD: "month",
+  PROPOSAL_BASE_PRICE_USD: 2,
+  PROPOSAL_SECTION_PRICE_USD: 2,
+  REVEAL_EMAIL_PRICE_USD: 6,
+  REVEAL_PHONE_PRICE_USD: 10,
+  EXCHANGE_RATE_API: "https://api.exchangerate-api.com/v4/latest/USD",
+  DEFAULT_CURRENCIES: ["USD", "PKR", "GBP", "EUR", "INR", "AED", "SAR"]
+};
+
+firebase.initializeApp(CONFIG.firebase);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let currentUser = null;
+let currentProfile = null;
+let unsubMatches = null;
+let unsubMessages = null;
+let unsubSupport = null;
+let unsubAdminSupport = null;
+let activeMatchId = null;
+let usersCache = {};
+let paymentMethodsCache = [];
+let enabledCurrencies = ['USD'];
+let exchangeRates = { USD: 1 };
+let exchangeRatesLoaded = false;
+let myUnlocksMap = {};
+let selectedPaymentMethod = null;
+let composeProposal = { toUid: null, sections: [], currency: 'USD' };
+let composeReveal = { toUid: null, field: null, currency: 'USD' };
+
+const $ = id => document.getElementById(id);
+const show = (selector, html) => { const el = $(selector); if (el) el.innerHTML = html; };
+const esc = (str) => (str || '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const matchIdFor = (a, b) => [a, b].sort().join('_');
+
+const PM_LABELS = { card: 'Credit / Debit Card', bank: 'Bank Transfer', jazzcash: 'JazzCash', easypaisa: 'EasyPaisa', paypal: 'PayPal', other: 'Other' };
+// Visible to everyone by default (per current platform policy).
+const ALWAYS_VISIBLE_FIELDS = ['name', 'age', 'maritalStatus', 'country'];
+// Unlockable as optional add-ons on a proposal, +$PROPOSAL_SECTION_PRICE_USD each.
+const UNLOCKABLE_FIELDS = ['city', 'religion'];
+// Unlockable individually via a standalone paid request + the target's consent.
+const REVEAL_FIELDS = ['email', 'phone'];
+const FIELD_LABELS = { name: 'Name', photo: 'Photo', city: 'City', maritalStatus: 'Marital Status', email: 'Email Address', phone: 'Phone Number', bio: 'About / Bio', religion: 'Religion' };
+function revealPrice(field) { return field === 'email' ? CONFIG.REVEAL_EMAIL_PRICE_USD : CONFIG.REVEAL_PHONE_PRICE_USD; }
+
+// ---------- Toast ----------
+function showToast(message, type = 'info') {
+  const host = $('toastHost');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  host.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3200);
+}
+
+// ---------- Ripple ----------
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.btn');
+  if (!btn) return;
+  const rect = btn.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  const size = Math.max(rect.width, rect.height);
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 500);
+});
+
+// ---------- Theme ----------
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  $('themeBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  try { localStorage.setItem('em-theme', theme); } catch (e) {}
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+(function initTheme() {
+  let saved = 'light';
+  try { saved = localStorage.getItem('em-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (e) {}
+  applyTheme(saved);
+})();
+
+// ---------- Photo compression ----------
+function compressPhoto(file, callback) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const MAX = 400;
+      if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+      else { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.8));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ---------- Currency / exchange rates ----------
+async function ensureExchangeRates() {
+  if (exchangeRatesLoaded) return exchangeRates;
+  try {
+    const res = await fetch(CONFIG.EXCHANGE_RATE_API);
+    const data = await res.json();
+    exchangeRates = data.rates || { USD: 1 };
+    exchangeRates.USD = 1;
+  } catch (e) { exchangeRates = { USD: 1 }; }
+  exchangeRatesLoaded = true;
+  return exchangeRates;
+}
+function usdToCurrency(usd, currency) { const rate = exchangeRates[currency] || 1; return Math.round(usd * rate * 100) / 100; }
+
+async function getPaymentSettings() {
+  const doc = await db.collection('settings').doc('payment').get();
+  const data = doc.exists ? doc.data() : {};
+  paymentMethodsCache = data.methods || [];
+  enabledCurrencies = (data.currencies && data.currencies.length) ? data.currencies : ['USD'];
+  return { methods: paymentMethodsCache, currencies: enabledCurrencies };
+}
+
+// ---------- Profile visibility ----------
+async function loadMyUnlocks() {
+  const snap = await db.collection('unlocks').where('viewerUid', '==', currentUser.uid).get();
+  const map = {};
+  snap.forEach(d => { const u = d.data(); map[u.targetUid] = u.sections || []; });
+  myUnlocksMap = map;
+  return map;
+}
+function visibleSetFor(profile) {
+  if (currentProfile.role === 'admin' || profile.id === currentUser.uid) return 'ALL';
+  const globallyVisible = profile.adminVisibleSections || [];
+  const unlocked = myUnlocksMap[profile.id] || [];
+  return new Set([...ALWAYS_VISIBLE_FIELDS, ...globallyVisible, ...unlocked]);
+}
+function pseudonym(profile) { return 'Member ' + (profile.id || '????').slice(-4).toUpperCase(); }
+
+async function getMyRevealsMap() {
+  const snap = await db.collection('reveals').where('requesterUid', '==', currentUser.uid).get();
+  const map = {};
+  snap.forEach(d => { const r = d.data(); map[r.targetUid + '_' + r.field] = { id: d.id, ...r }; });
+  return map;
+}
+
+// ---------- Navbar ----------
+function updateNavbar() {
+  let html = '';
+  if (currentUser) {
+    html = `<span class="hi">Hi, ${esc(currentProfile?.name || 'friend')}</span>`;
+    if (currentProfile?.role === 'admin') {
+      html += `<button onclick="showPage('admin-dashboard')">Dashboard</button>`;
+    } else if (currentProfile?.status === 'approved') {
+      html += `<button onclick="showPage('browse')">Browse</button>
+               <button onclick="showPage('proposals')">Proposals</button>
+               <button onclick="showPage('requests')">Requests</button>
+               <button onclick="showPage('chat')">Chat</button>
+               <button onclick="showPage('support')">Support</button>
+               <button onclick="showPage('upgrade')">${currentProfile?.isPremium ? '⭐ Premium' : 'Upgrade'}</button>
+               <button onclick="showPage('profile')">Profile</button>`;
+    }
+    html += `<button onclick="logout()">Logout</button>`;
+  } else {
+    html = `<button onclick="showPage('login')">Login</button><button onclick="showPage('signup')">Join</button>`;
+  }
+  show('navbar', html);
+}
+
+function skeletonGrid(n = 6) { let html = '<div class="grid">'; for (let i = 0; i < n; i++) html += '<div class="skeleton-card"></div>'; return html + '</div>'; }
+function closeModal() { show('modalHost', ''); }
+function detachRealtime() {
+  if (unsubMatches) { unsubMatches(); unsubMatches = null; }
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+  if (unsubSupport) { unsubSupport(); unsubSupport = null; }
+  if (unsubAdminSupport) { unsubAdminSupport(); unsubAdminSupport = null; }
+  activeMatchId = null;
+}
+
+// ---------- Router ----------
+function showPage(page) {
+  detachRealtime();
+  closeModal();
+
+  if (page === 'login') {
+    show('app', `
+      <div class="card" style="max-width:440px;margin:0 auto;">
+        <h2>Welcome back 👋</h2>
+        <p class="text-muted">Log in to continue your search.</p>
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group"><label for="loginEmail">Email address</label><input type="email" id="loginEmail" autocomplete="email" required></div>
+          <div class="form-group">
+            <label for="loginPass">Password</label>
+            <div class="pass-field">
+              <input type="password" id="loginPass" autocomplete="current-password" required>
+              <button type="button" class="eye-toggle" aria-label="Show password" onclick="togglePassword('loginPass')">👁</button>
+            </div>
+          </div>
+          <div id="loginError" class="alert alert-error hidden"></div>
+          <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Log in</button>
+        </form>
+        <p class="text-muted" style="margin-top:14px;"><a href="#" onclick="openForgotPasswordModal();return false;" style="color:var(--primary);font-weight:700;">Forgot password?</a></p>
+        <p class="text-muted" style="margin-top:6px;">New here? <a href="#" onclick="showPage('signup');return false;" style="color:var(--primary);font-weight:700;">Create an account</a></p>
+      </div>
+    `);
+  }
+
+  else if (page === 'signup') {
+    show('app', `
+      <div class="card" style="max-width:560px;margin:0 auto;">
+        <h2>Create your account 🎉</h2>
+        <p class="text-muted">Every profile is reviewed by our team before it goes live. By default other members see your name, age, marital status, and country — everything else stays private until unlocked.</p>
+        <form onsubmit="handleSignup(event)">
+          <div class="form-row">
+            <div class="form-group"><label for="signupName">Full name</label><input type="text" id="signupName" required></div>
+            <div class="form-group"><label for="signupAge">Age</label><input type="number" id="signupAge" min="18" max="100" required></div>
+          </div>
+          <div class="form-group"><label for="signupEmail">Email address</label><input type="email" id="signupEmail" autocomplete="email" required></div>
+          <div class="form-group">
+            <label for="signupPass">Password (min. 8 characters)</label>
+            <div class="pass-field">
+              <input type="password" id="signupPass" minlength="8" autocomplete="new-password" required>
+              <button type="button" class="eye-toggle" aria-label="Show password" onclick="togglePassword('signupPass')">👁</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="signupGender">Gender</label>
+              <select id="signupGender" onchange="updateMaritalStatus()" required>
+                <option value="">Select</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="signupMarital">Marital status</label><select id="signupMarital" required><option value="">Select gender first</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="signupReligion">Religion</label>
+              <select id="signupReligion" required>
+                <option value="">Select</option><option value="Muslim">Muslim</option><option value="Christian">Christian</option><option value="Hindu">Hindu</option><option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group"><label for="signupPhone">Phone number</label><input type="tel" id="signupPhone"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="signupCountry">Country / region</label><input type="text" id="signupCountry" placeholder="e.g. Pakistan, USA, UK" required></div>
+            <div class="form-group"><label for="signupCity">City</label><input type="text" id="signupCity" required></div>
+          </div>
+          <div class="form-group"><label for="signupBio">About you</label><textarea id="signupBio" rows="3" maxlength="500" placeholder="Tell prospective matches a little about yourself..."></textarea></div>
+          <div class="form-group"><label for="signupPhoto">Profile photo</label><input type="file" id="signupPhoto" accept="image/*"></div>
+          <div id="signupError" class="alert alert-error hidden"></div>
+          <button type="submit" class="btn btn-primary btn-block" id="signupBtn">Create account</button>
+        </form>
+        <p class="text-muted" style="margin-top:16px;">Already registered? <a href="#" onclick="showPage('login');return false;" style="color:var(--primary);font-weight:700;">Log in</a></p>
+      </div>
+    `);
+  }
+
+  else if (page === 'browse') { show('app', skeletonGrid()); loadProfiles(); }
+
+  else if (page === 'profile') { show('app', `<div class="card"><div id="profileContent" class="loading-wrap"><div class="spinner"></div></div></div>`); loadProfilePage(); }
+
+  else if (page === 'proposals') {
+    show('app', `
+      <div class="card">
+        <h2>Proposals</h2>
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-received" onclick="switchProposalTab('received')">Received</button>
+          <button class="tab-btn" id="tab-sent" onclick="switchProposalTab('sent')">Sent</button>
+        </div>
+        <div id="proposalsContent" class="loading-wrap"><div class="spinner"></div></div>
+      </div>
+    `);
+    switchProposalTab('received');
+  }
+
+  else if (page === 'requests') {
+    show('app', `
+      <div class="card">
+        <h2>Reveal Requests</h2>
+        <p class="text-muted">Requests to reveal your email or phone number need your approval — payment alone never unlocks them.</p>
+        <div class="tabs">
+          <button class="tab-btn active" id="reqtab-incoming" onclick="switchRequestsTab('incoming')">Incoming</button>
+          <button class="tab-btn" id="reqtab-outgoing" onclick="switchRequestsTab('outgoing')">Outgoing</button>
+        </div>
+        <div id="requestsContent" class="loading-wrap"><div class="spinner"></div></div>
+      </div>
+    `);
+    switchRequestsTab('incoming');
+  }
+
+  else if (page === 'chat') {
+    show('app', `
+      <div class="card">
+        <h2>Chat</h2>
+        <p class="text-muted">You can message anyone whose proposal you've accepted.</p>
+        <div class="chat-wrap">
+          <div class="chat-list" id="chatList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+          <div class="chat-pane">
+            <div class="chat-messages" id="chatMessages" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;">Select a conversation</div>
+            <div class="chat-input-row">
+              <input type="text" id="chatInput" placeholder="Select a match to start chatting" disabled>
+              <button class="btn btn-primary" id="chatSendBtn" onclick="sendMessage()" disabled>Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+    loadChatList();
+  }
+
+  else if (page === 'support') {
+    show('app', `
+      <div class="card">
+        <h2>Support Chat</h2>
+        <p class="text-muted">Message our team directly for help with your account.</p>
+        <div class="chat-wrap" style="grid-template-columns:1fr;">
+          <div class="chat-pane">
+            <div class="chat-messages" id="supportMessages" style="display:flex;align-items:center;justify-content:center;"><div class="spinner"></div></div>
+            <div class="chat-input-row">
+              <input type="text" id="supportInput" placeholder="Type a message…">
+              <button class="btn btn-primary" onclick="sendSupportMessage()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+    loadSupportChat();
+  }
+
+  else if (page === 'upgrade') { show('app', `<div class="loading-wrap"><div class="spinner"></div></div>`); loadUpgradePage(); }
+
+  else if (page === 'admin-dashboard') {
+    show('app', `
+      <div class="card">
+        <h2>Admin Dashboard</h2>
+        <div class="tabs">
+          <button class="tab-btn active" id="admtab-pending" onclick="switchAdminTab('pending')">Pending Review</button>
+          <button class="tab-btn" id="admtab-all" onclick="switchAdminTab('all')">All Members</button>
+          <button class="tab-btn" id="admtab-payments" onclick="switchAdminTab('payments')">Payment Submissions</button>
+          <button class="tab-btn" id="admtab-methods" onclick="switchAdminTab('methods')">Payments &amp; Currency</button>
+          <button class="tab-btn" id="admtab-analytics" onclick="switchAdminTab('analytics')">Analytics</button>
+          <button class="tab-btn" id="admtab-support" onclick="switchAdminTab('support')">Support Chats</button>
+        </div>
+        <div id="adminContent" class="loading-wrap"><div class="spinner"></div></div>
+      </div>
+    `);
+    switchAdminTab('pending');
+  }
+
+  else if (page === 'about') {
+    show('app', `<div class="card"><h2>About Easy-marriage</h2><p>Easy-marriage connects people who are seriously looking for a life partner. Every profile passes through human review, and most personal details stay private until you choose — or a match unlocks with your consent — to reveal them.</p></div>`);
+  }
+  else if (page === 'safety') {
+    show('app', `
+      <div class="card"><h2>Safety &amp; Privacy</h2>
+      <ul style="margin-left:20px;line-height:1.9;">
+        <li>By default, other members see your name, age, marital status, and country only.</li>
+        <li>Your photo, city, religion, email, and phone stay hidden unless you, our admin team, or your own approval reveals them.</li>
+        <li>Nobody can see your email or phone just by paying — you always get to approve or deny that request yourself.</li>
+        <li>Never send money to another member directly — only use the official payment methods listed in-app.</li>
+        <li>Report a suspicious profile to our team any time via the Support chat.</li>
+      </ul></div>
+    `);
+  }
+  else if (page === 'terms') {
+    show('app', `<div class="card"><h2>Terms &amp; Conditions</h2><p>By using Easy-marriage you agree to represent yourself honestly and treat other members with respect. Payments (Premium membership, proposal fees, or reveal requests) are manually verified by our team; refunds are handled case-by-case.</p></div>`);
+  }
+}
+
+function updateMaritalStatus() {
+  const gender = $('signupGender').value;
+  const marital = $('signupMarital');
+  if (gender === 'Male') marital.innerHTML = '<option value="">Select</option><option value="Single">Single</option><option value="Already Married">Already Married</option>';
+  else if (gender === 'Female') marital.innerHTML = '<option value="">Select</option><option value="Single">Single</option><option value="Divorced">Divorced</option><option value="Widow">Widow</option>';
+  else marital.innerHTML = '<option value="">Select</option><option value="Single">Single</option><option value="Divorced">Divorced</option>';
+}
+function togglePassword(id) { const input = $(id); input.type = input.type === 'password' ? 'text' : 'password'; }
+
+// ---------- Auth ----------
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = $('loginBtn');
+  btn.disabled = true; btn.textContent = 'Logging in…';
+  $('loginError').classList.add('hidden');
+  try { await auth.signInWithEmailAndPassword($('loginEmail').value.trim(), $('loginPass').value); }
+  catch (error) { $('loginError').textContent = friendlyAuthError(error); $('loginError').classList.remove('hidden'); }
+  finally { btn.disabled = false; btn.textContent = 'Log in'; }
+}
+
+async function handleSignup(e) {
+  e.preventDefault();
+  const btn = $('signupBtn');
+  const name = $('signupName').value.trim();
+  const email = $('signupEmail').value.trim();
+  const password = $('signupPass').value;
+  const gender = $('signupGender').value;
+  const marital = $('signupMarital').value;
+  const age = $('signupAge').value;
+  const religion = $('signupReligion').value;
+  const country = $('signupCountry').value.trim();
+  const city = $('signupCity').value.trim();
+  const phone = $('signupPhone').value.trim();
+  const bio = $('signupBio').value.trim();
+  const photoFile = $('signupPhoto').files[0];
+
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  $('signupError').classList.add('hidden');
+
+  try {
+    let photoB64 = '';
+    if (photoFile) photoB64 = await new Promise(resolve => compressPhoto(photoFile, resolve));
+
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    const role = email.toLowerCase() === CONFIG.ADMIN_EMAIL.toLowerCase() ? 'admin' : 'user';
+
+    await db.collection('users').doc(cred.user.uid).set({
+      name, email, gender, maritalStatus: marital, age: parseInt(age, 10),
+      religion, country, city, phone, bio, photo: photoB64,
+      role, status: role === 'admin' ? 'approved' : 'pending',
+      isPremium: false, adminVisibleSections: [],
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    await auth.signOut();
+    showPage('login');
+    showToast('Account created! We\'ll email you once approved.', 'success');
+  } catch (error) {
+    $('signupError').textContent = friendlyAuthError(error);
+    $('signupError').classList.remove('hidden');
+  } finally { btn.disabled = false; btn.textContent = 'Create account'; }
+}
+
+function friendlyAuthError(error) {
+  const map = {
+    'auth/email-already-in-use': 'That email address already has an account. Try logging in instead.',
+    'auth/invalid-email': 'That email address doesn\'t look right.',
+    'auth/weak-password': 'Please choose a stronger password (at least 8 characters).',
+    'auth/wrong-password': 'Incorrect email or password.',
+    'auth/user-not-found': 'Incorrect email or password.',
+    'auth/invalid-credential': 'Incorrect email or password.',
+    'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.'
+  };
+  return map[error.code] || error.message;
+}
+
+async function logout() { await auth.signOut(); }
+
+// ---------- Forgot password ----------
+function openForgotPasswordModal() {
+  show('modalHost', `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 style="font-size:19px;">Reset your password</h2>
+        <p class="text-muted" style="margin-bottom:14px;">Enter your account email and we'll send a secure reset link to it.</p>
+        <div class="form-group"><label>Email address</label><input type="email" id="forgotEmail"></div>
+        <div id="forgotMsg" class="alert hidden"></div>
+        <button class="btn btn-primary btn-block" id="forgotSendBtn" onclick="sendForgotPasswordEmail()">Send reset link</button>
+        <p class="text-muted" style="margin-top:16px;text-align:center;">
+          Still can't access your account?
+          <a href="mailto:${CONFIG.SUPPORT_EMAIL}?subject=Account%20Recovery%20Request&body=Hi%2C%20I%20can't%20access%20my%20Easy-marriage%20account.%20My%20registered%20email%20is%3A%20" style="color:var(--primary);font-weight:700;">Contact support</a>
+        </p>
+      </div>
+    </div>
+  `);
+}
+async function sendForgotPasswordEmail() {
+  const email = $('forgotEmail').value.trim();
+  const msg = $('forgotMsg');
+  if (!email) { msg.className = 'alert alert-error'; msg.textContent = 'Please enter your email.'; msg.classList.remove('hidden'); return; }
+  const btn = $('forgotSendBtn'); btn.disabled = true; btn.textContent = 'Sending…';
+  try { await auth.sendPasswordResetEmail(email); } catch (e) { /* fall through to generic message below */ }
+  // Deliberately shown regardless of whether the email exists, so nobody can
+  // probe which addresses are registered.
+  msg.className = 'alert alert-success';
+  msg.textContent = 'If an account exists for that email, a reset link has been sent.';
+  msg.classList.remove('hidden');
+  btn.disabled = false; btn.textContent = 'Send reset link';
+}
+
+// ---------- Browse ----------
+async function getSentProposalsMap() {
+  const snap = await db.collection('proposals').where('fromUid', '==', currentUser.uid).get();
+  const map = {};
+  snap.forEach(d => map[d.data().toUid] = { id: d.id, ...d.data() });
+  return map;
+}
+
+async function loadProfiles() {
+  try {
+    await Promise.all([ensureExchangeRates(), getPaymentSettings(), loadMyUnlocks()]);
+    const oppositeGender = currentProfile.gender === 'Male' ? 'Female' : currentProfile.gender === 'Female' ? 'Male' : null;
+    let query = db.collection('users').where('status', '==', 'approved');
+    if (oppositeGender) query = query.where('gender', '==', oppositeGender);
+
+    const [snap, sentMap, revealsMap] = await Promise.all([query.get(), getSentProposalsMap(), getMyRevealsMap()]);
+    let profiles = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(p => p.id !== currentUser.uid);
+    profiles.sort((a, b) => (b.isPremium ? 1 : 0) - (a.isPremium ? 1 : 0));
+    usersCache = { ...usersCache, ...Object.fromEntries(profiles.map(p => [p.id, p])) };
+
+    if (profiles.length === 0) {
+      show('app', `<h2 style="margin-bottom:10px;">Browse Profiles</h2><div class="card text-center text-muted">No matching approved profiles yet — check back soon.</div>`);
+      return;
+    }
+
+    let html = '<h2 style="margin-bottom:6px;">Browse Profiles</h2><p class="text-muted" style="margin-bottom:14px;">Name, age, marital status, and country are shown by default. Everything else needs a proposal or a reveal request.</p><div class="grid">';
+    profiles.forEach(p => {
+      const visibleSet = visibleSetFor(p);
+      const canSee = (f) => visibleSet === 'ALL' || visibleSet.has(f);
+      const existing = sentMap[p.id];
+
+      let proposalHtml;
+      if (existing) {
+        if (existing.status === 'awaiting_payment') proposalHtml = `<span class="badge badge-pending" style="display:block;">Awaiting Payment Verification</span>`;
+        else if (existing.status === 'payment_rejected') proposalHtml = `<button class="btn btn-primary btn-sm btn-block" onclick="openProposalModal('${p.id}')">Retry Proposal</button>`;
+        else if (existing.status === 'pending') proposalHtml = `<span class="badge badge-pending" style="display:block;">Proposal Sent</span>`;
+        else if (existing.status === 'accepted') proposalHtml = `<span class="badge badge-accepted" style="display:block;">Matched — go to Chat</span>`;
+        else if (existing.status === 'declined') proposalHtml = `<span class="badge badge-declined" style="display:block;">Declined</span>`;
+      } else {
+        proposalHtml = `<button class="btn btn-primary btn-sm btn-block" onclick="openProposalModal('${p.id}')">Send Proposal</button>`;
+      }
+
+      const revealButtons = REVEAL_FIELDS.map(f => revealActionHtml(p.id, f, canSee, revealsMap)).join('');
+
+      const displayName = canSee('name') ? esc(p.name) : esc(pseudonym(p));
+      const avatarHtml = (canSee('photo') && p.photo)
+        ? `<img src="${p.photo}" class="profile-avatar" alt="${displayName}">`
+        : `<div class="profile-avatar-placeholder">${canSee('name') ? esc((p.name || '?')[0]) : '🔒'}</div>`;
+      let extra = `<div class="profile-info">${esc(p.maritalStatus)}</div>`;
+      if (canSee('city')) extra += `<div class="profile-info">${esc(p.city)}</div>`;
+      if (canSee('religion')) extra += `<div class="profile-info text-muted">${esc(p.religion)}</div>`;
+
+      html += `
+        <div class="profile-card">
+          ${avatarHtml}
+          <div class="profile-name">${displayName} ${p.isPremium ? '<span class="badge badge-premium">⭐</span>' : ''}</div>
+          <div class="profile-info">${esc(p.age)} yrs · ${esc(p.country)}</div>
+          ${extra}
+          <div class="card-actions">${proposalHtml}${revealButtons}</div>
+        </div>
+      `;
+    });
+    html += '</div>';
+    show('app', html);
+  } catch (error) {
+    show('app', `<div class="alert alert-error">Couldn't load profiles: ${esc(error.message)}</div>`);
+  }
+}
+
+function revealActionHtml(targetUid, field, canSee, revealsMap) {
+  if (canSee(field)) return '';
+  const r = revealsMap[targetUid + '_' + field];
+  const price = revealPrice(field);
+  const label = FIELD_LABELS[field];
+  if (!r) return `<button class="btn btn-secondary btn-sm btn-block" onclick="openRevealModal('${targetUid}','${field}')">Request ${esc(label)} — $${price}</button>`;
+  if (r.status === 'awaiting_payment') return `<span class="badge badge-pending" style="display:block;">${esc(label)}: Awaiting Payment</span>`;
+  if (r.status === 'pending_consent') return `<span class="badge badge-pending" style="display:block;">${esc(label)}: Awaiting Their Approval</span>`;
+  if (r.status === 'denied') return `<span class="badge badge-declined" style="display:block;">${esc(label)}: Denied</span>`;
+  if (r.status === 'payment_rejected') return `<button class="btn btn-secondary btn-sm btn-block" onclick="openRevealModal('${targetUid}','${field}')">Retry ${esc(label)} Request</button>`;
+  return '';
+}
+
+async function fetchUserProfile(uid) {
+  if (usersCache[uid]) return usersCache[uid];
+  const doc = await db.collection('users').doc(uid).get();
+  const data = doc.exists ? { id: uid, ...doc.data() } : { id: uid, name: 'Unknown member' };
+  usersCache[uid] = data;
+  return data;
+}
+
+// ================================================================
+// PROPOSAL COMPOSER
+// ================================================================
+function proposalTotalUsd() { return CONFIG.PROPOSAL_BASE_PRICE_USD + composeProposal.sections.length * CONFIG.PROPOSAL_SECTION_PRICE_USD; }
+
+function openProposalModal(toUid) {
+  composeProposal = { toUid, sections: [], currency: enabledCurrencies[0] || 'USD' };
+  renderProposalStep1();
+}
+function renderProposalStep1() {
+  const p = usersCache[composeProposal.toUid];
+  const totalUsd = proposalTotalUsd();
+  const localAmount = usdToCurrency(totalUsd, composeProposal.currency);
+  const currencyOptions = enabledCurrencies.map(c => `<option value="${c}" ${c === composeProposal.currency ? 'selected' : ''}>${c}</option>`).join('');
+  const sectionRows = UNLOCKABLE_FIELDS.map(f => `
+    <div class="section-check">
+      <label><input type="checkbox" ${composeProposal.sections.includes(f) ? 'checked' : ''} onchange="toggleProposalSection('${f}')"> Reveal ${esc(FIELD_LABELS[f])}</label>
+      <span class="text-muted">+$${CONFIG.PROPOSAL_SECTION_PRICE_USD}</span>
+    </div>
+  `).join('');
+
+  show('modalHost', `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+        <h2 style="font-size:19px;">Send a Proposal 💌</h2>
+        <p class="text-muted" style="margin-bottom:12px;">to ${esc(pseudonym(p))}</p>
+        <div class="section-check"><label>Basic proposal</label><span class="text-muted">$${CONFIG.PROPOSAL_BASE_PRICE_USD}</span></div>
+        ${sectionRows}
+        <div class="total-row"><span>Total</span><span>${localAmount} ${composeProposal.currency} <span class="text-muted" style="font-weight:400;font-size:12px;">(≈ $${totalUsd} USD)</span></span></div>
+        <div class="form-group"><label>Currency</label><select onchange="updateProposalCurrency(this.value)">${currencyOptions}</select></div>
+        <button class="btn btn-primary btn-block" onclick="renderProposalStep2()">Continue to Payment</button>
+      </div>
+    </div>
+  `);
+}
+function toggleProposalSection(field) {
+  const i = composeProposal.sections.indexOf(field);
+  if (i === -1) composeProposal.sections.push(field); else composeProposal.sections.splice(i, 1);
+  renderProposalStep1();
+}
+function updateProposalCurrency(v) { composeProposal.currency = v; renderProposalStep1(); }
+
+function renderProposalStep2() {
+  const methods = paymentMethodsCache.filter(m => m.active);
+  const totalUsd = proposalTotalUsd();
+  const localAmount = usdToCurrency(totalUsd, composeProposal.currency);
+  if (methods.length === 0) { show('modalHost', noMethodsModal()); return; }
+
+  const methodsHtml = methods.map((m, i) => `
+    <div class="pm-option" id="proppm-${i}" onclick="selectComposePaymentMethod(${i})">
+      <label><input type="radio" name="proppmRadio" style="margin-right:8px;" onclick="event.stopPropagation();selectComposePaymentMethod(${i})"> ${esc(PM_LABELS[m.type] || m.type)} — ${esc(m.label)}</label>
+      <p class="text-muted" style="margin-top:6px;white-space:pre-wrap;">${esc(m.details)}</p>
+    </div>
+  `).join('');
+
+  show('modalHost', `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 style="font-size:19px;">Pay ${localAmount} ${composeProposal.currency}</h2>
+        <p class="text-muted" style="margin-bottom:12px;">Choose a method, send the amount, then enter your reference below.</p>
+        ${methodsHtml}
+        <div class="form-group" style="margin-top:10px;"><label>Transaction ID / reference</label><input type="text" id="propPaymentRef" placeholder="e.g. TXN123456789"></div>
+        <div class="form-group"><label>Screenshot of payment (optional)</label><input type="file" id="propPaymentProof" accept="image/*"></div>
+        <div id="propPaymentMsg" class="alert hidden"></div>
+        <button class="btn btn-primary btn-block" id="propSubmitBtn" onclick="submitProposalPayment()">Submit Proposal</button>
+      </div>
+    </div>
+  `);
+  selectedPaymentMethod = null;
+}
+function noMethodsModal() {
+  return `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box text-center">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <p class="text-muted" style="padding:30px 0;">No payment methods are configured yet. Please check back soon.</p>
+      </div>
+    </div>`;
+}
+function selectComposePaymentMethod(i) {
+  selectedPaymentMethod = i;
+  document.querySelectorAll('.pm-option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  const radio = document.querySelectorAll('input[name="proppmRadio"]')[i];
+  if (radio) radio.checked = true;
+}
+
+async function submitProposalPayment() {
+  const ref = $('propPaymentRef').value.trim();
+  const msg = $('propPaymentMsg');
+  const methods = paymentMethodsCache.filter(m => m.active);
+  if (selectedPaymentMethod === null) { msg.className = 'alert alert-error'; msg.textContent = 'Please select a payment method.'; msg.classList.remove('hidden'); return; }
+  if (!ref) { msg.className = 'alert alert-error'; msg.textContent = 'Please enter your transaction reference.'; msg.classList.remove('hidden'); return; }
+
+  const btn = $('propSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  try {
+    const proofFile = $('propPaymentProof').files[0];
+    let proofB64 = ''; if (proofFile) proofB64 = await new Promise(resolve => compressPhoto(proofFile, resolve));
+    const method = methods[selectedPaymentMethod];
+    const totalUsd = proposalTotalUsd();
+    const localAmount = usdToCurrency(totalUsd, composeProposal.currency);
+
+    const proposalRef = await db.collection('proposals').add({
+      fromUid: currentUser.uid, toUid: composeProposal.toUid, status: 'awaiting_payment',
+      unlockedSections: composeProposal.sections, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    await db.collection('payments').add({
+      uid: currentUser.uid, userName: currentProfile.name, purpose: 'proposal',
+      proposalId: proposalRef.id, toUid: composeProposal.toUid, unlockedSections: composeProposal.sections,
+      methodType: method.type, methodLabel: method.label, reference: ref, proof: proofB64,
+      amountUSD: totalUsd, currency: composeProposal.currency, amountLocal: localAmount,
+      status: 'pending', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    showToast('Proposal submitted — awaiting payment verification.', 'success');
+    closeModal(); showPage('browse');
+  } catch (error) { msg.className = 'alert alert-error'; msg.textContent = error.message; msg.classList.remove('hidden'); }
+  finally { const b = $('propSubmitBtn'); if (b) { b.disabled = false; b.textContent = 'Submit Proposal'; } }
+}
+
+// ================================================================
+// REVEAL REQUEST COMPOSER (email / phone, requires target consent)
+// ================================================================
+function openRevealModal(toUid, field) {
+  composeReveal = { toUid, field, currency: enabledCurrencies[0] || 'USD' };
+  renderRevealStep1();
+}
+function renderRevealStep1() {
+  const p = usersCache[composeReveal.toUid];
+  const priceUsd = revealPrice(composeReveal.field);
+  const localAmount = usdToCurrency(priceUsd, composeReveal.currency);
+  const currencyOptions = enabledCurrencies.map(c => `<option value="${c}" ${c === composeReveal.currency ? 'selected' : ''}>${c}</option>`).join('');
+
+  show('modalHost', `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 style="font-size:19px;">Request ${esc(FIELD_LABELS[composeReveal.field])} 🔒</h2>
+        <p class="text-muted" style="margin-bottom:12px;">from ${esc(pseudonym(p))}. They'll need to approve this after your payment is verified — it isn't automatic.</p>
+        <div class="total-row"><span>Total</span><span>${localAmount} ${composeReveal.currency} <span class="text-muted" style="font-weight:400;font-size:12px;">(≈ $${priceUsd} USD)</span></span></div>
+        <div class="form-group"><label>Currency</label><select onchange="updateRevealCurrency(this.value)">${currencyOptions}</select></div>
+        <button class="btn btn-primary btn-block" onclick="renderRevealStep2()">Continue to Payment</button>
+      </div>
+    </div>
+  `);
+}
+function updateRevealCurrency(v) { composeReveal.currency = v; renderRevealStep1(); }
+
+function renderRevealStep2() {
+  const methods = paymentMethodsCache.filter(m => m.active);
+  const priceUsd = revealPrice(composeReveal.field);
+  const localAmount = usdToCurrency(priceUsd, composeReveal.currency);
+  if (methods.length === 0) { show('modalHost', noMethodsModal()); return; }
+
+  const methodsHtml = methods.map((m, i) => `
+    <div class="pm-option" id="revpm-${i}" onclick="selectRevealPaymentMethod(${i})">
+      <label><input type="radio" name="revpmRadio" style="margin-right:8px;" onclick="event.stopPropagation();selectRevealPaymentMethod(${i})"> ${esc(PM_LABELS[m.type] || m.type)} — ${esc(m.label)}</label>
+      <p class="text-muted" style="margin-top:6px;white-space:pre-wrap;">${esc(m.details)}</p>
+    </div>
+  `).join('');
+
+  show('modalHost', `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 style="font-size:19px;">Pay ${localAmount} ${composeReveal.currency}</h2>
+        ${methodsHtml}
+        <div class="form-group" style="margin-top:10px;"><label>Transaction ID / reference</label><input type="text" id="revPaymentRef" placeholder="e.g. TXN123456789"></div>
+        <div class="form-group"><label>Screenshot of payment (optional)</label><input type="file" id="revPaymentProof" accept="image/*"></div>
+        <div id="revPaymentMsg" class="alert hidden"></div>
+        <button class="btn btn-primary btn-block" id="revSubmitBtn" onclick="submitRevealPayment()">Submit Request</button>
+      </div>
+    </div>
+  `);
+  selectedPaymentMethod = null;
+}
+function selectRevealPaymentMethod(i) {
+  selectedPaymentMethod = i;
+  document.querySelectorAll('.pm-option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  const radio = document.querySelectorAll('input[name="revpmRadio"]')[i];
+  if (radio) radio.checked = true;
+}
+
+async function submitRevealPayment() {
+  const ref = $('revPaymentRef').value.trim();
+  const msg = $('revPaymentMsg');
+  const methods = paymentMethodsCache.filter(m => m.active);
+  if (selectedPaymentMethod === null) { msg.className = 'alert alert-error'; msg.textContent = 'Please select a payment method.'; msg.classList.remove('hidden'); return; }
+  if (!ref) { msg.className = 'alert alert-error'; msg.textContent = 'Please enter your transaction reference.'; msg.classList.remove('hidden'); return; }
+
+  const btn = $('revSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  try {
+    const proofFile = $('revPaymentProof').files[0];
+    let proofB64 = ''; if (proofFile) proofB64 = await new Promise(resolve => compressPhoto(proofFile, resolve));
+    const method = methods[selectedPaymentMethod];
+    const priceUsd = revealPrice(composeReveal.field);
+    const localAmount = usdToCurrency(priceUsd, composeReveal.currency);
+
+    const revealRef = await db.collection('reveals').add({
+      requesterUid: currentUser.uid, targetUid: composeReveal.toUid, field: composeReveal.field,
+      status: 'awaiting_payment', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    await db.collection('payments').add({
+      uid: currentUser.uid, userName: currentProfile.name, purpose: 'reveal',
+      revealId: revealRef.id, toUid: composeReveal.toUid, field: composeReveal.field,
+      methodType: method.type, methodLabel: method.label, reference: ref, proof: proofB64,
+      amountUSD: priceUsd, currency: composeReveal.currency, amountLocal: localAmount,
+      status: 'pending', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    showToast('Request submitted — awaiting payment verification.', 'success');
+    closeModal(); showPage('browse');
+  } catch (error) { msg.className = 'alert alert-error'; msg.textContent = error.message; msg.classList.remove('hidden'); }
+  finally { const b = $('revSubmitBtn'); if (b) { b.disabled = false; b.textContent = 'Submit Request'; } }
+}
+
+// ---------- Proposals list ----------
+async function switchProposalTab(which) {
+  $('tab-received').classList.toggle('active', which === 'received');
+  $('tab-sent').classList.toggle('active', which === 'sent');
+  show('proposalsContent', '<div class="loading-wrap"><div class="spinner"></div></div>');
+  await loadMyUnlocks();
+
+  let snap;
+  if (which === 'received') snap = await db.collection('proposals').where('toUid', '==', currentUser.uid).where('status', 'in', ['pending', 'accepted', 'declined']).get();
+  else snap = await db.collection('proposals').where('fromUid', '==', currentUser.uid).get();
+
+  let proposals = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  proposals.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+  if (proposals.length === 0) { show('proposalsContent', `<p class="text-muted" style="padding:20px 0;">No ${which} proposals yet.</p>`); return; }
+
+  const otherUids = proposals.map(p => which === 'received' ? p.fromUid : p.toUid);
+  const others = await Promise.all(otherUids.map(fetchUserProfile));
+
+  let html = '';
+  proposals.forEach((p, i) => {
+    const other = others[i];
+    const visibleSet = visibleSetFor(other);
+    const canSee = (f) => visibleSet === 'ALL' || visibleSet.has(f);
+    const displayName = canSee('name') ? esc(other.name) : esc(pseudonym(other));
+
+    const badge = p.status === 'awaiting_payment' ? '<span class="badge badge-pending">Awaiting Payment</span>'
+      : p.status === 'payment_rejected' ? '<span class="badge badge-declined">Payment Rejected</span>'
+      : p.status === 'pending' ? '<span class="badge badge-pending">Pending</span>'
+      : p.status === 'accepted' ? '<span class="badge badge-accepted">Accepted</span>' : '<span class="badge badge-declined">Declined</span>';
+
+    let actions = '';
+    if (which === 'received' && p.status === 'pending') {
+      actions = `<button class="btn btn-teal btn-sm" onclick="respondProposal('${p.id}','${p.fromUid}','accepted')">Accept</button>
+                 <button class="btn btn-danger btn-sm" onclick="respondProposal('${p.id}','${p.fromUid}','declined')">Decline</button>`;
+    } else if (which === 'sent' && p.status === 'pending') {
+      actions = `<button class="btn btn-secondary btn-sm" onclick="cancelProposal('${p.id}')">Cancel</button>`;
+    } else if (p.status === 'accepted') {
+      actions = `<button class="btn btn-secondary btn-sm" onclick="showPage('chat')">Message</button>`;
+    }
+
+    const unlockNote = (which === 'sent' && p.unlockedSections && p.unlockedSections.length)
+      ? `<div class="text-muted" style="font-size:11.5px;">Unlocked: ${p.unlockedSections.map(f => esc(FIELD_LABELS[f])).join(', ')}</div>` : '';
+
+    html += `
+      <div class="prop-row">
+        ${(canSee('photo') && other.photo) ? `<img src="${other.photo}" class="prop-avatar" alt="">` : `<div class="prop-avatar">${canSee('name') ? esc((other.name||'?')[0]) : '🔒'}</div>`}
+        <div class="prop-meta">
+          <div class="prop-name">${displayName}</div>
+          <div class="text-muted">${esc(other.country || '')} · ${esc(other.maritalStatus || '')}</div>
+          ${unlockNote}
+          ${badge}
+        </div>
+        <div class="prop-actions">${actions}</div>
+      </div>
+    `;
+  });
+  show('proposalsContent', html);
+}
+
+async function respondProposal(proposalId, fromUid, decision) {
+  try {
+    await db.collection('proposals').doc(proposalId).update({ status: decision });
+    if (decision === 'accepted') {
+      const mId = matchIdFor(currentUser.uid, fromUid);
+      await db.collection('matches').doc(mId).set({ users: [currentUser.uid, fromUid], createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      showToast('It\'s a match! 🎉', 'success');
+    }
+    switchProposalTab('received');
+  } catch (error) { showToast('Something went wrong: ' + error.message, 'error'); }
+}
+async function cancelProposal(proposalId) {
+  try { await db.collection('proposals').doc(proposalId).delete(); switchProposalTab('sent'); }
+  catch (error) { showToast('Something went wrong: ' + error.message, 'error'); }
+}
+
+// ---------- Requests page (reveal consent) ----------
+async function switchRequestsTab(which) {
+  $('reqtab-incoming').classList.toggle('active', which === 'incoming');
+  $('reqtab-outgoing').classList.toggle('active', which === 'outgoing');
+  show('requestsContent', '<div class="loading-wrap"><div class="spinner"></div></div>');
+
+  const field = which === 'incoming' ? 'targetUid' : 'requesterUid';
+  const snap = await db.collection('reveals').where(field, '==', currentUser.uid).get();
+  let reqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  reqs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+  if (reqs.length === 0) { show('requestsContent', `<p class="text-muted" style="padding:20px 0;">No ${which} requests yet.</p>`); return; }
+
+  const otherUids = reqs.map(r => which === 'incoming' ? r.requesterUid : r.targetUid);
+  const others = await Promise.all(otherUids.map(fetchUserProfile));
+
+  let html = '';
+  reqs.forEach((r, i) => {
+    const other = others[i];
+    const badge = r.status === 'awaiting_payment' ? '<span class="badge badge-pending">Awaiting Payment</span>'
+      : r.status === 'pending_consent' ? '<span class="badge badge-pending">Awaiting Your Approval</span>'
+      : r.status === 'approved' ? '<span class="badge badge-accepted">Approved</span>'
+      : r.status === 'denied' ? '<span class="badge badge-declined">Denied</span>' : '<span class="badge badge-declined">Payment Rejected</span>';
+
+    let actions = '';
+    if (which === 'incoming' && r.status === 'pending_consent') {
+      actions = `<button class="btn btn-teal btn-sm" onclick="respondReveal('${r.id}','${r.requesterUid}','${r.field}','approved')">Approve</button>
+                 <button class="btn btn-danger btn-sm" onclick="respondReveal('${r.id}','${r.requesterUid}','${r.field}','denied')">Deny</button>`;
+    }
+
+    html += `
+      <div class="prop-row">
+        <div class="prop-avatar">${esc((other.name || pseudonym(other))[0])}</div>
+        <div class="prop-meta">
+          <div class="prop-name">${esc(pseudonym(other))} wants your ${esc(FIELD_LABELS[r.field])}</div>
+          ${badge}
+        </div>
+        <div class="prop-actions">${actions}</div>
+      </div>
+    `;
+  });
+  show('requestsContent', html);
+}
+
+async function respondReveal(revealId, requesterUid, field, decision) {
+  try {
+    await db.collection('reveals').doc(revealId).update({ status: decision });
+    if (decision === 'approved') {
+      await db.collection('unlocks').add({ viewerUid: requesterUid, targetUid: currentUser.uid, sections: [field], revealId, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      showToast('Approved — they can now see it.', 'success');
+    } else {
+      showToast('Request denied.', 'info');
+    }
+    switchRequestsTab('incoming');
+  } catch (error) { showToast('Something went wrong: ' + error.message, 'error'); }
+}
+
+// ---------- Profile page ----------
+function loadProfilePage() {
+  const p = currentProfile;
+  show('profileContent', `
+    <div class="text-center" style="margin-bottom:18px;">
+      ${p.photo ? `<img src="${p.photo}" class="profile-avatar" style="width:110px;height:110px;">` : `<div class="profile-avatar-placeholder" style="width:110px;height:110px;font-size:36px;">${esc((p.name||'?')[0])}</div>`}
+      ${p.isPremium ? '<div style="margin-top:8px;"><span class="badge badge-premium">⭐ Premium Member</span></div>' : ''}
+    </div>
+    <div class="alert alert-info">By default, other members see your name, age, marital status, and country. Everything else stays private unless someone unlocks it via a proposal or an approved reveal request, or our admin team enables it.</div>
+    <form onsubmit="handleProfileUpdate(event)">
+      <div class="form-row">
+        <div class="form-group"><label>Full name</label><input type="text" id="pfName" value="${esc(p.name)}" required></div>
+        <div class="form-group"><label>Age</label><input type="number" id="pfAge" min="18" max="100" value="${esc(p.age)}" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Country / region</label><input type="text" id="pfCountry" value="${esc(p.country)}" required></div>
+        <div class="form-group"><label>City</label><input type="text" id="pfCity" value="${esc(p.city)}" required></div>
+      </div>
+      <div class="form-group"><label>Phone number</label><input type="tel" id="pfPhone" value="${esc(p.phone || '')}"></div>
+      <div class="form-group"><label>About you</label><textarea id="pfBio" rows="3" maxlength="500">${esc(p.bio || '')}</textarea></div>
+      <div class="form-group"><label>Update profile photo</label><input type="file" id="pfPhoto" accept="image/*"></div>
+      <div id="profileMsg" class="alert hidden"></div>
+      <button type="submit" class="btn btn-primary" id="pfSaveBtn">Save changes</button>
+    </form>
+    <hr style="margin:24px 0;border:none;border-top:1px solid var(--line);">
+    <p class="text-muted">Email: ${esc(p.email)} &nbsp;·&nbsp; Status: <span class="badge badge-accepted" style="text-transform:capitalize;">${esc(p.status)}</span></p>
+  `);
+}
+
+async function handleProfileUpdate(e) {
+  e.preventDefault();
+  const btn = $('pfSaveBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const updates = {
+      name: $('pfName').value.trim(), age: parseInt($('pfAge').value, 10),
+      country: $('pfCountry').value.trim(), city: $('pfCity').value.trim(),
+      phone: $('pfPhone').value.trim(), bio: $('pfBio').value.trim()
+    };
+    const photoFile = $('pfPhoto').files[0];
+    if (photoFile) updates.photo = await new Promise(resolve => compressPhoto(photoFile, resolve));
+    await db.collection('users').doc(currentUser.uid).update(updates);
+    currentProfile = { ...currentProfile, ...updates };
+    updateNavbar(); loadProfilePage();
+    showToast('Profile updated ✨', 'success');
+  } catch (error) { showToast(error.message, 'error'); }
+  finally { const b = $('pfSaveBtn'); if (b) { b.disabled = false; b.textContent = 'Save changes'; } }
+}
+
+// ---------- Match Chat ----------
+function loadChatList() {
+  unsubMatches = db.collection('matches').where('users', 'array-contains', currentUser.uid)
+    .onSnapshot(async (snap) => {
+      const matches = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (matches.length === 0) { show('chatList', `<p class="text-muted" style="padding:16px;">No matches yet. Accepted proposals appear here.</p>`); return; }
+      const others = await Promise.all(matches.map(m => fetchUserProfile(m.users.find(u => u !== currentUser.uid))));
+      let html = '';
+      matches.forEach((m, i) => { html += `<div class="chat-list-item ${m.id === activeMatchId ? 'active' : ''}" onclick="openChat('${m.id}', '${others[i].id}')">${esc(others[i].name)}</div>`; });
+      show('chatList', html);
+    }, (err) => show('chatList', `<p class="text-muted" style="padding:16px;">${esc(err.message)}</p>`));
+}
+function openChat(matchId, otherUid) {
+  activeMatchId = matchId; loadChatList();
+  $('chatInput').disabled = false; $('chatSendBtn').disabled = false;
+  $('chatInput').placeholder = 'Type a message…'; $('chatInput').dataset.matchId = matchId;
+  if (unsubMessages) unsubMessages();
+  unsubMessages = db.collection('matches').doc(matchId).collection('messages').orderBy('createdAt', 'asc')
+    .onSnapshot((snap) => {
+      let html = '';
+      snap.forEach(d => { const m = d.data(); html += `<div class="msg ${m.from === currentUser.uid ? 'msg-mine' : 'msg-theirs'}">${esc(m.text)}</div>`; });
+      const box = $('chatMessages');
+      if (box) { box.style.display = 'flex'; box.innerHTML = html || '<p class="text-muted">Say hello 👋</p>'; box.scrollTop = box.scrollHeight; }
+    });
+}
+async function sendMessage() {
+  const input = $('chatInput');
+  const text = input.value.trim(); const matchId = input.dataset.matchId;
+  if (!text || !matchId) return;
+  input.value = '';
+  try { await db.collection('matches').doc(matchId).collection('messages').add({ from: currentUser.uid, text, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); }
+  catch (error) { showToast('Message failed to send: ' + error.message, 'error'); }
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (document.activeElement && document.activeElement.id === 'chatInput') sendMessage();
+  if (document.activeElement && document.activeElement.id === 'supportInput') sendSupportMessage();
+});
+
+// ---------- Support Chat (member side) ----------
+function loadSupportChat() {
+  unsubSupport = db.collection('supportChats').doc(currentUser.uid).collection('messages').orderBy('createdAt', 'asc')
+    .onSnapshot((snap) => {
+      let html = '';
+      snap.forEach(d => { const m = d.data(); html += `<div class="msg ${m.from === currentUser.uid ? 'msg-mine' : 'msg-theirs'}">${esc(m.text)}</div>`; });
+      const box = $('supportMessages');
+      if (box) { box.style.display = 'flex'; box.innerHTML = html || '<p class="text-muted">Say hello to our team 👋</p>'; box.scrollTop = box.scrollHeight; }
+    }, () => { const box = $('supportMessages'); if (box) box.innerHTML = '<p class="text-muted">Say hello to our team 👋</p>'; });
+}
+async function sendSupportMessage() {
+  const input = $('supportInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  try {
+    await db.collection('supportChats').doc(currentUser.uid).set({ userName: currentProfile.name, lastMessage: text, lastMessageAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    await db.collection('supportChats').doc(currentUser.uid).collection('messages').add({ from: currentUser.uid, text, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+  } catch (error) { showToast('Message failed to send: ' + error.message, 'error'); }
+}
+
+// ================================================================
+// PREMIUM UPGRADE
+// ================================================================
+async function loadUpgradePage() {
+  await Promise.all([ensureExchangeRates(), getPaymentSettings()]);
+  const methods = paymentMethodsCache.filter(m => m.active);
+  let mySubmission = null;
+  const subSnap = await db.collection('payments').where('uid', '==', currentUser.uid).where('purpose', '==', 'premium')
+    .orderBy('createdAt', 'desc').limit(1).get().catch(() => null);
+  if (subSnap && !subSnap.empty) mySubmission = { id: subSnap.docs[0].id, ...subSnap.docs[0].data() };
+
+  let statusBanner = '';
+  if (currentProfile.isPremium) statusBanner = `<div class="alert alert-success">You're a Premium member ⭐ — thank you for supporting Easy-marriage.</div>`;
+  else if (mySubmission && mySubmission.status === 'pending') statusBanner = `<div class="alert alert-info">Your payment submission is awaiting admin verification.</div>`;
+  else if (mySubmission && mySubmission.status === 'rejected') statusBanner = `<div class="alert alert-error">Your last submission couldn't be verified. Please check the details and try again.</div>`;
+
+  const currency = enabledCurrencies[0] || 'USD';
+  const localAmount = usdToCurrency(CONFIG.PREMIUM_PRICE_USD, currency);
+  const currencyOptions = enabledCurrencies.map(c => `<option value="${c}">${c}</option>`).join('');
+
+  if (methods.length === 0) { show('app', `<h2 style="margin-bottom:14px;">Go Premium ⭐</h2>${statusBanner}<div class="card text-center text-muted">No payment methods are configured yet. Please check back soon.</div>`); return; }
+
+  const methodsHtml = methods.map((m, i) => `
+    <div class="pm-option" id="pm-${i}" onclick="selectPaymentMethod(${i})">
+      <label><input type="radio" name="pmRadio" style="margin-right:8px;" onclick="event.stopPropagation();selectPaymentMethod(${i})"> ${esc(PM_LABELS[m.type] || m.type)} — ${esc(m.label)}</label>
+      <p class="text-muted" style="margin-top:6px;white-space:pre-wrap;">${esc(m.details)}</p>
+    </div>
+  `).join('');
+
+  show('app', `
+    <h2 style="margin-bottom:14px;">Go Premium ⭐</h2>
+    ${statusBanner}
+    <div class="grid" style="grid-template-columns:1fr;max-width:420px;margin:0 auto 24px;">
+      <div class="plan-card featured">
+        <h3>Premium Membership</h3>
+        <div class="plan-price" id="premiumPriceDisplay">${localAmount} ${currency}<span style="font-size:14px;color:var(--muted);"> / ${esc(CONFIG.PREMIUM_PERIOD)}</span></div>
+        <p class="text-muted">≈ $${CONFIG.PREMIUM_PRICE_USD} USD · Priority placement in Browse, a Premium badge, and unlimited proposals.</p>
+        <div class="form-group" style="margin-top:12px;"><label>Currency</label><select id="premiumCurrency" onchange="updatePremiumCurrency(this.value)">${currencyOptions}</select></div>
+      </div>
+    </div>
+    ${!currentProfile.isPremium ? `
+    <div class="card" style="max-width:520px;margin:0 auto;">
+      <h2 style="font-size:18px;">1. Choose a payment method</h2>
+      ${methodsHtml}
+      <h2 style="font-size:18px;margin-top:20px;">2. Send payment &amp; submit proof</h2>
+      <p class="text-muted" style="margin-bottom:10px;">After sending the amount above using your selected method, enter your transaction reference below.</p>
+      <div class="form-group"><label>Transaction ID / reference</label><input type="text" id="paymentRef" placeholder="e.g. TXN123456789"></div>
+      <div class="form-group"><label>Screenshot of payment (optional)</label><input type="file" id="paymentProof" accept="image/*"></div>
+      <div id="paymentMsg" class="alert hidden"></div>
+      <button class="btn btn-primary btn-block" id="paymentSubmitBtn" onclick="submitPayment()">Submit for verification</button>
+    </div>
+    ` : ''}
+  `);
+  selectedPaymentMethod = null;
+}
+function updatePremiumCurrency(currency) {
+  const localAmount = usdToCurrency(CONFIG.PREMIUM_PRICE_USD, currency);
+  $('premiumPriceDisplay').innerHTML = `${localAmount} ${currency}<span style="font-size:14px;color:var(--muted);"> / ${esc(CONFIG.PREMIUM_PERIOD)}</span>`;
+}
+function selectPaymentMethod(i) {
+  selectedPaymentMethod = i;
+  document.querySelectorAll('.pm-option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  const radio = document.querySelectorAll('input[name="pmRadio"]')[i];
+  if (radio) radio.checked = true;
+}
+async function submitPayment() {
+  const ref = $('paymentRef').value.trim();
+  const msg = $('paymentMsg');
+  const methods = paymentMethodsCache.filter(m => m.active);
+  if (selectedPaymentMethod === null) { msg.className = 'alert alert-error'; msg.textContent = 'Please select a payment method.'; msg.classList.remove('hidden'); return; }
+  if (!ref) { msg.className = 'alert alert-error'; msg.textContent = 'Please enter your transaction reference.'; msg.classList.remove('hidden'); return; }
+  const btn = $('paymentSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  try {
+    const proofFile = $('paymentProof').files[0];
+    let proofB64 = ''; if (proofFile) proofB64 = await new Promise(resolve => compressPhoto(proofFile, resolve));
+    const method = methods[selectedPaymentMethod];
+    const currency = $('premiumCurrency') ? $('premiumCurrency').value : (enabledCurrencies[0] || 'USD');
+    const localAmount = usdToCurrency(CONFIG.PREMIUM_PRICE_USD, currency);
+    await db.collection('payments').add({
+      uid: currentUser.uid, userName: currentProfile.name, purpose: 'premium',
+      methodType: method.type, methodLabel: method.label, reference: ref, proof: proofB64,
+      amountUSD: CONFIG.PREMIUM_PRICE_USD, currency, amountLocal: localAmount,
+      status: 'pending', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast('Submitted! We\'ll verify it shortly.', 'success');
+    loadUpgradePage();
+  } catch (error) { msg.className = 'alert alert-error'; msg.textContent = error.message; msg.classList.remove('hidden'); }
+  finally { const b = $('paymentSubmitBtn'); if (b) { b.disabled = false; b.textContent = 'Submit for verification'; } }
+}
+
+// ================================================================
+// ADMIN
+// ================================================================
+async function switchAdminTab(which) {
+  ['pending', 'all', 'payments', 'methods', 'analytics', 'support'].forEach(t => $(`admtab-${t}`).classList.toggle('active', t === which));
+  show('adminContent', '<div class="loading-wrap"><div class="spinner"></div></div>');
+
+  if (which === 'pending' || which === 'all') {
+    let query = db.collection('users');
+    if (which === 'pending') query = query.where('status', '==', 'pending');
+    const snap = await query.get();
+    let users = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(u => u.role !== 'admin');
+    if (users.length === 0) { show('adminContent', `<p class="text-muted" style="padding:20px 0;">Nothing to show here.</p>`); return; }
+
+    let html = '';
+    users.forEach(u => {
+      const statusBadge = u.status === 'approved' ? '<span class="badge badge-accepted">Approved</span>'
+        : u.status === 'pending' ? '<span class="badge badge-pending">Pending</span>' : '<span class="badge badge-declined">Rejected</span>';
+      let actions = '';
+      if (u.status === 'pending') actions = `<button class="btn btn-teal btn-sm" onclick="setUserStatus('${u.id}','approved')">Approve</button><button class="btn btn-danger btn-sm" onclick="setUserStatus('${u.id}','rejected')">Reject</button>`;
+      else if (u.status === 'approved') actions = `<button class="btn btn-danger btn-sm" onclick="setUserStatus('${u.id}','suspended')">Suspend</button>`;
+      else actions = `<button class="btn btn-secondary btn-sm" onclick="setUserStatus('${u.id}','approved')">Reinstate</button>`;
+      actions += ` <button class="btn btn-secondary btn-sm" onclick="openVisibilityModal('${u.id}')">Visibility</button>
+                   <button class="btn btn-secondary btn-sm" onclick="forcePasswordReset('${esc(u.email)}')">Reset Password</button>
+                   <button class="btn btn-danger btn-sm" onclick="confirmDeleteUser('${u.id}','${esc(u.name).replace(/'/g,"\\'")}')">Delete</button>`;
+      html += `
+        <div class="admin-row">
+          <div><strong>${esc(u.name)}</strong> ${statusBadge} ${u.isPremium ? '<span class="badge badge-premium">⭐</span>' : ''}<br>
+          <span class="text-muted">${esc(u.email)} · ${esc(u.gender)} · ${esc(u.age)} yrs · ${esc(u.city)}, ${esc(u.country)}</span></div>
+          <div class="prop-actions">${actions}</div>
+        </div>`;
+    });
+    show('adminContent', html);
+  }
+
+  else if (which === 'payments') {
+    const snap = await db.collection('payments').orderBy('createdAt', 'desc').limit(100).get();
+    const submissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (submissions.length === 0) { show('adminContent', `<p class="text-muted" style="padding:20px 0;">No payment submissions yet.</p>`); return; }
+
+    let html = '';
+    submissions.forEach(s => {
+      const badge = s.status === 'pending' ? '<span class="badge badge-pending">Pending</span>' : s.status === 'verified' ? '<span class="badge badge-accepted">Verified</span>' : '<span class="badge badge-declined">Rejected</span>';
+      const purposeLabel = s.purpose === 'proposal' ? 'Proposal Fee' : s.purpose === 'reveal' ? `Reveal: ${FIELD_LABELS[s.field] || s.field}` : 'Premium';
+      let actions = '';
+      if (s.status === 'pending') actions = `<button class="btn btn-teal btn-sm" onclick="reviewPayment('${s.id}', 'verified')">Verify</button><button class="btn btn-danger btn-sm" onclick="reviewPayment('${s.id}', 'rejected')">Reject</button>`;
+      html += `
+        <div class="admin-row">
+          <div>
+            <strong>${esc(s.userName)}</strong> ${badge} <span class="badge badge-pending">${esc(purposeLabel)}</span><br>
+            <span class="text-muted">${esc(PM_LABELS[s.methodType] || s.methodType)} · Ref: ${esc(s.reference)} · ${esc(s.amountLocal)} ${esc(s.currency)} (≈ $${esc(s.amountUSD)} USD)</span>
+            ${s.proof ? `<br><a href="${s.proof}" target="_blank" style="color:var(--primary);font-weight:600;font-size:12.5px;">View proof</a>` : ''}
+          </div>
+          <div class="prop-actions">${actions}</div>
+        </div>`;
+    });
+    show('adminContent', html);
+  }
+
+  else if (which === 'methods') {
+    const { methods, currencies } = await getPaymentSettings();
+    let methodRows = methods.map((m, i) => `
+      <div class="admin-row">
+        <div><strong>${esc(PM_LABELS[m.type] || m.type)}</strong> ${m.active ? '<span class="badge badge-accepted">Active</span>' : '<span class="badge badge-declined">Hidden</span>'}<br>
+        <span class="text-muted">${esc(m.label)} — ${esc(m.details)}</span></div>
+        <div class="prop-actions">
+          <button class="btn btn-secondary btn-sm" onclick="togglePaymentMethod(${i})">${m.active ? 'Hide' : 'Activate'}</button>
+          <button class="btn btn-danger btn-sm" onclick="removePaymentMethod(${i})">Remove</button>
+        </div>
+      </div>`).join('');
+    if (!methodRows) methodRows = `<p class="text-muted" style="padding:10px 0;">No payment methods configured yet.</p>`;
+
+    const currencyChecks = CONFIG.DEFAULT_CURRENCIES.map(c => `
+      <label style="display:inline-flex;align-items:center;gap:6px;margin:4px 12px 4px 0;font-weight:600;font-size:13px;">
+        <input type="checkbox" value="${c}" ${currencies.includes(c) ? 'checked' : ''} onchange="toggleCurrency('${c}', this.checked)"> ${c}
+      </label>`).join('');
+
+    show('adminContent', `
+      <h3 style="font-size:16px;margin-bottom:12px;">Payment methods</h3>
+      ${methodRows}
+      <div class="form-row" style="margin-top:16px;">
+        <div class="form-group"><label>Type</label>
+          <select id="newPmType">
+            <option value="card">Credit / Debit Card</option>
+            <option value="bank">Bank Transfer</option>
+            <option value="jazzcash">JazzCash</option>
+            <option value="easypaisa">EasyPaisa</option>
+            <option value="paypal">PayPal</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Label</label><input type="text" id="newPmLabel" placeholder="e.g. Main account"></div>
+      </div>
+      <div class="form-group"><label>Details shown to members</label><textarea id="newPmDetails" rows="2" placeholder="e.g. Account Title: Easy-marriage&#10;Account #: 0312-1234567&#10;Bank: HBL"></textarea></div>
+      <button class="btn btn-primary" onclick="addPaymentMethod()">Add method</button>
+
+      <hr style="margin:24px 0;border:none;border-top:1px solid var(--line);">
+      <h3 style="font-size:16px;margin-bottom:10px;">Accepted currencies</h3>
+      <p class="text-muted" style="margin-bottom:10px;">All prices are set in USD; members see the live-converted amount.</p>
+      <div>${currencyChecks}</div>
+    `);
+  }
+
+  else if (which === 'analytics') {
+    const snap = await db.collection('users').get();
+    const users = snap.docs.map(d => d.data()).filter(u => u.role !== 'admin');
+    const gender = {}, religion = {}, maritalStatus = {}, country = {};
+    users.forEach(u => {
+      tally(gender, u.gender || 'Unknown');
+      tally(religion, u.religion || 'Unknown');
+      tally(maritalStatus, u.maritalStatus || 'Unknown');
+      tally(country, u.country || 'Unknown');
+    });
+    const premiumCount = users.filter(u => u.isPremium).length;
+    const approvedCount = users.filter(u => u.status === 'approved').length;
+    const pendingCount = users.filter(u => u.status === 'pending').length;
+
+    show('adminContent', `
+      <div class="stat-summary">
+        <div class="stat-box"><div class="num">${users.length}</div><div class="lbl">Total Members</div></div>
+        <div class="stat-box"><div class="num">${approvedCount}</div><div class="lbl">Approved</div></div>
+        <div class="stat-box"><div class="num">${pendingCount}</div><div class="lbl">Pending</div></div>
+        <div class="stat-box"><div class="num">${premiumCount}</div><div class="lbl">Premium</div></div>
+      </div>
+      ${barSection('By Gender', gender)}
+      ${barSection('By Religion', religion)}
+      ${barSection('By Marital Status', maritalStatus)}
+      ${barSection('By Country', country, 8)}
+    `);
+  }
+
+  else if (which === 'support') {
+    const snap = await db.collection('supportChats').orderBy('lastMessageAt', 'desc').limit(50).get();
+    const threads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (threads.length === 0) { show('adminContent', `<p class="text-muted" style="padding:20px 0;">No support conversations yet.</p>`); return; }
+
+    let listHtml = threads.map(t => `<div class="chat-list-item" onclick="openAdminSupportChat('${t.id}')">${esc(t.userName || 'Member')}<br><span class="text-muted" style="font-weight:400;">${esc((t.lastMessage||'').slice(0,40))}</span></div>`).join('');
+
+    show('adminContent', `
+      <div class="chat-wrap">
+        <div class="chat-list" id="adminSupportList">${listHtml}</div>
+        <div class="chat-pane">
+          <div class="chat-messages" id="adminSupportMessages" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic;">Select a conversation</div>
+          <div class="chat-input-row">
+            <input type="text" id="adminSupportInput" placeholder="Select a member to reply" disabled>
+            <button class="btn btn-primary" id="adminSupportSendBtn" onclick="sendAdminSupportMessage()" disabled>Send</button>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+}
+
+function tally(obj, key) { obj[key] = (obj[key] || 0) + 1; }
+function barSection(title, counts, limit) {
+  let entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  if (limit && entries.length > limit) entries = entries.slice(0, limit);
+  const max = entries.length ? entries[0][1] : 1;
+  const rows = entries.map(([label, count]) => `
+    <div class="bar-row">
+      <div class="bar-label"><span>${esc(label)}</span><span class="text-muted">${count}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(count / max * 100)}%;"></div></div>
+    </div>
+  `).join('');
+  return `<h3 style="font-size:15px;margin:18px 0 10px;">${esc(title)}</h3>${rows || '<p class="text-muted">No data yet.</p>'}`;
+}
+
+function openAdminSupportChat(uid) {
+  document.querySelectorAll('#adminSupportList .chat-list-item').forEach(el => el.classList.remove('active'));
+  $('adminSupportInput').disabled = false;
+  $('adminSupportSendBtn').disabled = false;
+  $('adminSupportInput').dataset.uid = uid;
+  if (unsubAdminSupport) unsubAdminSupport();
+  unsubAdminSupport = db.collection('supportChats').doc(uid).collection('messages').orderBy('createdAt', 'asc')
+    .onSnapshot((snap) => {
+      let html = '';
+      snap.forEach(d => { const m = d.data(); html += `<div class="msg ${m.from === 'admin' ? 'msg-mine' : 'msg-theirs'}">${esc(m.text)}</div>`; });
+      const box = $('adminSupportMessages');
+      if (box) { box.style.display = 'flex'; box.innerHTML = html || '<p class="text-muted">No messages yet.</p>'; box.scrollTop = box.scrollHeight; }
+    });
+}
+async function sendAdminSupportMessage() {
+  const input = $('adminSupportInput');
+  const uid = input.dataset.uid;
+  const text = input.value.trim();
+  if (!text || !uid) return;
+  input.value = '';
+  try {
+    await db.collection('supportChats').doc(uid).set({ lastMessage: text, lastMessageAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    await db.collection('supportChats').doc(uid).collection('messages').add({ from: 'admin', text, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+  } catch (error) { showToast('Message failed to send: ' + error.message, 'error'); }
+}
+
+async function setUserStatus(uid, status) {
+  try {
+    await db.collection('users').doc(uid).update({ status });
+    showToast('Member updated.', 'success');
+    const activeTab = ['pending', 'all'].find(t => $(`admtab-${t}`).classList.contains('active')) || 'pending';
+    switchAdminTab(activeTab);
+  } catch (error) { showToast('Could not update member: ' + error.message, 'error'); }
+}
+
+async function forcePasswordReset(email) {
+  try { await auth.sendPasswordResetEmail(email); showToast('Password reset email sent to ' + email, 'success'); }
+  catch (error) { showToast('Could not send reset email: ' + error.message, 'error'); }
+}
+
+function confirmDeleteUser(uid, name) {
+  if (confirm(`Permanently delete ${name}'s account, including their chats and proposals? This cannot be undone.`)) adminDeleteUser(uid);
+}
+async function adminDeleteUser(uid) {
+  try {
+    showToast('Deleting account…', 'info');
+    // Proposals in either direction
+    const [propsFrom, propsTo] = await Promise.all([
+      db.collection('proposals').where('fromUid', '==', uid).get(),
+      db.collection('proposals').where('toUid', '==', uid).get()
+    ]);
+    await Promise.all([...propsFrom.docs, ...propsTo.docs].map(d => d.ref.delete()));
+
+    // Matches + their message subcollections
+    const matchesSnap = await db.collection('matches').where('users', 'array-contains', uid).get();
+    for (const m of matchesSnap.docs) {
+      const msgsSnap = await m.ref.collection('messages').get();
+      await Promise.all(msgsSnap.docs.map(md => md.ref.delete()));
+      await m.ref.delete();
+    }
+
+    // Reveal requests in either direction
+    const [revFrom, revTo] = await Promise.all([
+      db.collection('reveals').where('requesterUid', '==', uid).get(),
+      db.collection('reveals').where('targetUid', '==', uid).get()
+    ]);
+    await Promise.all([...revFrom.docs, ...revTo.docs].map(d => d.ref.delete()));
+
+    // Unlocks in either direction
+    const [unlFrom, unlTo] = await Promise.all([
+      db.collection('unlocks').where('viewerUid', '==', uid).get(),
+      db.collection('unlocks').where('targetUid', '==', uid).get()
+    ]);
+    await Promise.all([...unlFrom.docs, ...unlTo.docs].map(d => d.ref.delete()));
+
+    // Support chat thread
+    const supportMsgs = await db.collection('supportChats').doc(uid).collection('messages').get();
+    await Promise.all(supportMsgs.docs.map(d => d.ref.delete()));
+    await db.collection('supportChats').doc(uid).delete().catch(() => {});
+
+    // Finally, the profile itself
+    await db.collection('users').doc(uid).delete();
+
+    showToast('Account and related data deleted.', 'success');
+    switchAdminTab('all');
+  } catch (error) { showToast('Could not fully delete account: ' + error.message, 'error'); }
+}
+
+async function addPaymentMethod() {
+  const type = $('newPmType').value, label = $('newPmLabel').value.trim(), details = $('newPmDetails').value.trim();
+  if (!label || !details) { showToast('Please fill in label and details.', 'error'); return; }
+  try {
+    const { methods } = await getPaymentSettings();
+    methods.push({ type, label, details, active: true });
+    await db.collection('settings').doc('payment').set({ methods, currencies: enabledCurrencies }, { merge: true });
+    showToast('Payment method added.', 'success');
+    switchAdminTab('methods');
+  } catch (error) { showToast('Could not save: ' + error.message, 'error'); }
+}
+async function togglePaymentMethod(i) {
+  try {
+    const { methods } = await getPaymentSettings();
+    methods[i].active = !methods[i].active;
+    await db.collection('settings').doc('payment').set({ methods, currencies: enabledCurrencies }, { merge: true });
+    switchAdminTab('methods');
+  } catch (error) { showToast('Could not update: ' + error.message, 'error'); }
+}
+async function removePaymentMethod(i) {
+  try {
+    const { methods } = await getPaymentSettings();
+    methods.splice(i, 1);
+    await db.collection('settings').doc('payment').set({ methods, currencies: enabledCurrencies }, { merge: true });
+    showToast('Payment method removed.', 'success');
+    switchAdminTab('methods');
+  } catch (error) { showToast('Could not remove: ' + error.message, 'error'); }
+}
+async function toggleCurrency(code, checked) {
+  try {
+    const { methods, currencies } = await getPaymentSettings();
+    let next = currencies.slice();
+    if (checked && !next.includes(code)) next.push(code);
+    if (!checked) next = next.filter(c => c !== code);
+    if (next.length === 0) next = ['USD'];
+    await db.collection('settings').doc('payment').set({ methods, currencies: next }, { merge: true });
+    enabledCurrencies = next;
+  } catch (error) { showToast('Could not update currencies: ' + error.message, 'error'); }
+}
+
+async function reviewPayment(paymentId, decision) {
+  try {
+    const payDoc = await db.collection('payments').doc(paymentId).get();
+    const payment = payDoc.data();
+    await db.collection('payments').doc(paymentId).update({ status: decision });
+
+    if (payment.purpose === 'premium') {
+      if (decision === 'verified') await db.collection('users').doc(payment.uid).update({ isPremium: true, premiumSince: firebase.firestore.FieldValue.serverTimestamp() });
+    } else if (payment.purpose === 'proposal') {
+      if (decision === 'verified') await db.collection('proposals').doc(payment.proposalId).update({ status: 'pending' });
+      else await db.collection('proposals').doc(payment.proposalId).update({ status: 'payment_rejected' });
+    } else if (payment.purpose === 'reveal') {
+      if (decision === 'verified') await db.collection('reveals').doc(payment.revealId).update({ status: 'pending_consent' });
+      else await db.collection('reveals').doc(payment.revealId).update({ status: 'payment_rejected' });
+    }
+    showToast(decision === 'verified' ? 'Verified ✅' : 'Submission rejected.', decision === 'verified' ? 'success' : 'info');
+    switchAdminTab('payments');
+  } catch (error) { showToast('Something went wrong: ' + error.message, 'error'); }
+}
+
+// ---------- Admin: profile visibility control ----------
+async function openVisibilityModal(uid) {
+  const doc = await db.collection('users').doc(uid).get();
+  const u = { id: uid, ...doc.data() };
+  const visible = u.adminVisibleSections || [];
+  const fields = ['photo', 'city', 'religion', 'email', 'phone', 'bio'];
+  const rows = fields.map(f => `
+    <div class="section-check"><label><input type="checkbox" data-vis-field="${f}" ${visible.includes(f) ? 'checked' : ''}> ${esc(FIELD_LABELS[f])}</label></div>
+  `).join('');
+
+  show('modalHost', `
+    <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 style="font-size:19px;">Profile Visibility</h2>
+        <p class="text-muted" style="margin-bottom:12px;">${esc(u.name)} — name, age, marital status, and country are always visible. Toggle anything else you want made public for everyone.</p>
+        ${rows}
+        <button class="btn btn-primary btn-block" style="margin-top:16px;" onclick="saveVisibility('${uid}')">Save</button>
+      </div>
+    </div>
+  `);
+}
+async function saveVisibility(uid) {
+  const checked = Array.from(document.querySelectorAll('[data-vis-field]')).filter(el => el.checked).map(el => el.dataset.visField);
+  try { await db.collection('users').doc(uid).update({ adminVisibleSections: checked }); showToast('Visibility updated.', 'success'); closeModal(); }
+  catch (error) { showToast('Could not save: ' + error.message, 'error'); }
+}
+
+// ---------- Auth state ----------
+auth.onAuthStateChanged(async (user) => {
+  currentUser = user;
+  if (user) {
+    try { const doc = await db.collection('users').doc(user.uid).get(); currentProfile = doc.exists ? doc.data() : null; }
+    catch (e) { currentProfile = null; }
+    if (!currentProfile) { await auth.signOut(); return; }
+    updateNavbar();
+    if (currentProfile.role === 'admin') showPage('admin-dashboard');
+    else if (currentProfile.status === 'approved') showPage('browse');
+    else if (currentProfile.status === 'pending') show('app', `<div class="card text-center" style="padding:50px 20px;"><h2>Your profile is under review</h2><p class="text-muted" style="margin-top:8px;">Our team typically reviews new profiles within 24–48 hours.</p></div>`);
+    else show('app', `<div class="card text-center" style="padding:50px 20px;"><h2>This account is not active</h2><p class="text-muted" style="margin-top:8px;">Please contact support if you believe this is a mistake.</p></div>`);
+  } else {
+    currentProfile = null; updateNavbar(); showPage('login');
+  }
+});
+
+updateNavbar();
+</script>
+
+</body>
+</html>
